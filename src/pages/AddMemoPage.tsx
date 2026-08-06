@@ -58,9 +58,13 @@ const ContentInput = styled.div`
   font-size: 14px; line-height: 1.7; color: ${({ theme }) => theme.colors.textMain};
   outline: none; overflow-y: auto;
   &:empty:before { content: attr(data-placeholder); color: #A9B3BD; pointer-events: none; display: block; }
-  ul { list-style: disc inside; margin: 8px 0; padding-left: 10px; }
-  ol { list-style: decimal inside; margin: 8px 0; padding-left: 10px; }
-  li { margin-bottom: 4px; }
+  ul { list-style: disc; margin: 8px 0 8px 24px; padding-left: 0; }
+  ol { list-style: decimal; margin: 8px 0 8px 24px; padding-left: 0; }
+  li { margin-bottom: 4px; display: list-item; }
+  u { text-decoration: underline; }
+  s, strike { text-decoration: line-through; }
+  em, i { font-style: italic; }
+  b, strong { font-weight: bold; }
 `;
 const SaveBtn = styled.button`
   position: absolute; bottom: 18px; right: 18px; width: 44px; height: 44px;
@@ -114,9 +118,15 @@ const PanelClose = styled.button`
 
 /* Panel List (for text style, italic style) */
 const PanelList = styled.div`display: flex; flex-direction: column;`;
-const PanelListItem = styled.div`
+const PanelListItem = styled.div<{ $interactive?: boolean }>`
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 2px; border-bottom: 1px solid #F7F7F7;
+  padding: 12px 6px; border-bottom: 1px solid #F7F7F7; border-radius: 8px;
+  user-select: none; transition: background-color 0.15s ease;
+  ${({ $interactive }) => $interactive ? `
+    cursor: pointer;
+    &:hover { background-color: #F0FAF9; }
+    &:active { background-color: #E2F3F0; }
+  ` : ''}
   &:last-child { border-bottom: none; }
 `;
 const PanelListItemLeft = styled.div`
@@ -361,6 +371,28 @@ export const AddMemoPage: React.FC = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const savedSelectionRef = useRef<Range | null>(null);
 
+  const [activeFormats, setActiveFormats] = useState({
+    italic: false,
+    underline: false,
+    strikeThrough: false,
+    insertUnorderedList: false,
+    insertOrderedList: false,
+  });
+
+  const checkCommandStates = () => {
+    try {
+      setActiveFormats({
+        italic: document.queryCommandState('italic'),
+        underline: document.queryCommandState('underline'),
+        strikeThrough: document.queryCommandState('strikeThrough'),
+        insertUnorderedList: document.queryCommandState('insertUnorderedList'),
+        insertOrderedList: document.queryCommandState('insertOrderedList'),
+      });
+    } catch {
+      // ignore
+    }
+  };
+
   // 편집 모드: 초기 content 세팅
   useEffect(() => {
     if (editMemo && contentRef.current) {
@@ -383,9 +415,17 @@ export const AddMemoPage: React.FC = () => {
     if (!el) return;
     el.focus();
     const sel = window.getSelection();
-    if (savedSelectionRef.current && sel) {
+    if (!sel) return;
+    if (savedSelectionRef.current && el.contains(savedSelectionRef.current.commonAncestorContainer)) {
       sel.removeAllRanges();
       sel.addRange(savedSelectionRef.current);
+    } else {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      savedSelectionRef.current = range.cloneRange();
     }
   };
 
@@ -396,6 +436,7 @@ export const AddMemoPage: React.FC = () => {
       const range = sel.getRangeAt(0);
       if (contentRef.current?.contains(range.commonAncestorContainer)) {
         savedSelectionRef.current = range.cloneRange();
+        checkCommandStates();
       }
     };
     document.addEventListener('selectionchange', handler);
@@ -406,6 +447,7 @@ export const AddMemoPage: React.FC = () => {
     restoreSelection();
     document.execCommand(cmd, false, value || undefined);
     saveSelection();
+    checkCommandStates();
   };
 
   const execHighlight = (color: string) => {
@@ -624,47 +666,50 @@ export const AddMemoPage: React.FC = () => {
         <PanelClose onClick={closePanel}><CloseIcon /></PanelClose>
       </PanelHeader>
       <PanelList>
-        <PanelListItem>
+        <PanelListItem 
+          $interactive 
+          onMouseDown={(e) => { e.preventDefault(); exec('italic'); }}
+        >
           <PanelListItemLeft>
             <PanelListItemIcon><span style={{ fontStyle: 'italic', fontFamily: 'serif', fontWeight: 700 }}>I</span></PanelListItemIcon>
             <PanelListItemLabel>기울임꼴</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch>
-            <ToggleInput type="checkbox"
-              onMouseDown={(e) => { e.preventDefault(); exec('italic'); }}
-              onChange={() => {}} />
+          <ToggleSwitch style={{ pointerEvents: 'none' }}>
+            <ToggleInput type="checkbox" checked={activeFormats.italic} readOnly />
             <ToggleSlider />
           </ToggleSwitch>
         </PanelListItem>
-        <PanelListItem>
+        <PanelListItem 
+          $interactive 
+          onMouseDown={(e) => { e.preventDefault(); exec('underline'); }}
+        >
           <PanelListItemLeft>
             <PanelListItemIcon><span style={{ textDecoration: 'underline', fontWeight: 700 }}>U</span></PanelListItemIcon>
             <PanelListItemLabel>밑줄</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch>
-            <ToggleInput type="checkbox"
-              onMouseDown={(e) => { e.preventDefault(); exec('underline'); }}
-              onChange={() => {}} />
+          <ToggleSwitch style={{ pointerEvents: 'none' }}>
+            <ToggleInput type="checkbox" checked={activeFormats.underline} readOnly />
             <ToggleSlider />
           </ToggleSwitch>
         </PanelListItem>
-        <PanelListItem>
+        <PanelListItem 
+          $interactive 
+          onMouseDown={(e) => { e.preventDefault(); exec('strikeThrough'); }}
+        >
           <PanelListItemLeft>
             <PanelListItemIcon><span style={{ textDecoration: 'line-through', fontWeight: 700 }}>S</span></PanelListItemIcon>
             <PanelListItemLabel>취소선</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch>
-            <ToggleInput type="checkbox"
-              onMouseDown={(e) => { e.preventDefault(); exec('strikeThrough'); }}
-              onChange={() => {}} />
+          <ToggleSwitch style={{ pointerEvents: 'none' }}>
+            <ToggleInput type="checkbox" checked={activeFormats.strikeThrough} readOnly />
             <ToggleSlider />
           </ToggleSwitch>
         </PanelListItem>
       </PanelList>
       <AlignmentRow>
-        <AlignBtn $active={align === 'left'} onClick={() => applyAlign('left')}><AlignLeftIcon /></AlignBtn>
-        <AlignBtn $active={align === 'center'} onClick={() => applyAlign('center')}><AlignCenterIcon /></AlignBtn>
-        <AlignBtn $active={align === 'right'} onClick={() => applyAlign('right')}><AlignRightIcon /></AlignBtn>
+        <AlignBtn $active={align === 'left'} onMouseDown={(e) => { e.preventDefault(); applyAlign('left'); }}><AlignLeftIcon /></AlignBtn>
+        <AlignBtn $active={align === 'center'} onMouseDown={(e) => { e.preventDefault(); applyAlign('center'); }}><AlignCenterIcon /></AlignBtn>
+        <AlignBtn $active={align === 'right'} onMouseDown={(e) => { e.preventDefault(); applyAlign('right'); }}><AlignRightIcon /></AlignBtn>
       </AlignmentRow>
     </>
   );
@@ -676,27 +721,29 @@ export const AddMemoPage: React.FC = () => {
         <PanelClose onClick={closePanel}><CloseIcon /></PanelClose>
       </PanelHeader>
       <PanelList>
-        <PanelListItem>
+        <PanelListItem 
+          $interactive 
+          onMouseDown={(e) => { e.preventDefault(); exec('insertUnorderedList'); }}
+        >
           <PanelListItemLeft>
             <PanelListItemIcon><span>•</span></PanelListItemIcon>
             <PanelListItemLabel>불릿 리스트</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch>
-            <ToggleInput type="checkbox"
-              onMouseDown={(e) => { e.preventDefault(); exec('insertUnorderedList'); }}
-              onChange={() => {}} />
+          <ToggleSwitch style={{ pointerEvents: 'none' }}>
+            <ToggleInput type="checkbox" checked={activeFormats.insertUnorderedList} readOnly />
             <ToggleSlider />
           </ToggleSwitch>
         </PanelListItem>
-        <PanelListItem>
+        <PanelListItem 
+          $interactive 
+          onMouseDown={(e) => { e.preventDefault(); exec('insertOrderedList'); }}
+        >
           <PanelListItemLeft>
             <PanelListItemIcon><span style={{ fontSize: 11, fontWeight: 700 }}>1.</span></PanelListItemIcon>
             <PanelListItemLabel>번호 리스트</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch>
-            <ToggleInput type="checkbox"
-              onMouseDown={(e) => { e.preventDefault(); exec('insertOrderedList'); }}
-              onChange={() => {}} />
+          <ToggleSwitch style={{ pointerEvents: 'none' }}>
+            <ToggleInput type="checkbox" checked={activeFormats.insertOrderedList} readOnly />
             <ToggleSlider />
           </ToggleSwitch>
         </PanelListItem>
