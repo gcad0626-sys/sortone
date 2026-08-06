@@ -146,19 +146,28 @@ const ColorDot = styled.span<{ $color: string; $bordered?: boolean }>`
   ${({ $bordered }) => $bordered ? 'border: 1.5px solid #A9B3BD; background-color: transparent;' : ''}
 `;
 
-/* Toggle Switch */
-const ToggleSwitch = styled.label`position: relative; display: inline-block; width: 38px; height: 20px;`;
-const ToggleInput = styled.input`
-  opacity: 0; width: 0; height: 0;
-  &:checked + span { background-color: #9CEAEF; }
-  &:checked + span:before { transform: translateX(18px); }
-`;
-const ToggleSlider = styled.span`
-  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #E2E8F0; transition: .2s; border-radius: 99px;
-  &:before {
-    position: absolute; content: ""; height: 14px; width: 14px;
-    left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%;
+/* Custom Toggle Switch */
+const CustomToggle = styled.div<{ $checked: boolean }>`
+  position: relative;
+  width: 38px;
+  height: 20px;
+  background-color: ${({ $checked }) => ($checked ? '#9CEAEF' : '#E2E8F0')};
+  border-radius: 99px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: ${({ $checked }) => ($checked ? 'translateX(18px)' : 'translateX(0)')};
   }
 `;
 
@@ -444,8 +453,33 @@ export const AddMemoPage: React.FC = () => {
   }, []);
 
   const exec = (cmd: string, value: string = '') => {
+    const el = contentRef.current;
+    if (!el) return;
     restoreSelection();
     document.execCommand(cmd, false, value || undefined);
+    saveSelection();
+    checkCommandStates();
+  };
+
+  const execList = (cmd: 'insertUnorderedList' | 'insertOrderedList') => {
+    const el = contentRef.current;
+    if (!el) return;
+    restoreSelection();
+    
+    if (!el.innerText.trim() && (!el.innerHTML || el.innerHTML === '<br>')) {
+      el.innerHTML = '<div><br></div>';
+      const range = document.createRange();
+      const targetNode = el.firstChild || el;
+      range.selectNodeContents(targetNode);
+      range.collapse(true);
+      const sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+    }
+
+    document.execCommand(cmd, false);
     saveSelection();
     checkCommandStates();
   };
@@ -674,10 +708,7 @@ export const AddMemoPage: React.FC = () => {
             <PanelListItemIcon><span style={{ fontStyle: 'italic', fontFamily: 'serif', fontWeight: 700 }}>I</span></PanelListItemIcon>
             <PanelListItemLabel>기울임꼴</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch style={{ pointerEvents: 'none' }}>
-            <ToggleInput type="checkbox" checked={activeFormats.italic} readOnly />
-            <ToggleSlider />
-          </ToggleSwitch>
+          <CustomToggle $checked={activeFormats.italic} />
         </PanelListItem>
         <PanelListItem 
           $interactive 
@@ -687,10 +718,7 @@ export const AddMemoPage: React.FC = () => {
             <PanelListItemIcon><span style={{ textDecoration: 'underline', fontWeight: 700 }}>U</span></PanelListItemIcon>
             <PanelListItemLabel>밑줄</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch style={{ pointerEvents: 'none' }}>
-            <ToggleInput type="checkbox" checked={activeFormats.underline} readOnly />
-            <ToggleSlider />
-          </ToggleSwitch>
+          <CustomToggle $checked={activeFormats.underline} />
         </PanelListItem>
         <PanelListItem 
           $interactive 
@@ -700,10 +728,7 @@ export const AddMemoPage: React.FC = () => {
             <PanelListItemIcon><span style={{ textDecoration: 'line-through', fontWeight: 700 }}>S</span></PanelListItemIcon>
             <PanelListItemLabel>취소선</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch style={{ pointerEvents: 'none' }}>
-            <ToggleInput type="checkbox" checked={activeFormats.strikeThrough} readOnly />
-            <ToggleSlider />
-          </ToggleSwitch>
+          <CustomToggle $checked={activeFormats.strikeThrough} />
         </PanelListItem>
       </PanelList>
       <AlignmentRow>
@@ -723,29 +748,23 @@ export const AddMemoPage: React.FC = () => {
       <PanelList>
         <PanelListItem 
           $interactive 
-          onMouseDown={(e) => { e.preventDefault(); exec('insertUnorderedList'); }}
+          onMouseDown={(e) => { e.preventDefault(); execList('insertUnorderedList'); }}
         >
           <PanelListItemLeft>
             <PanelListItemIcon><span>•</span></PanelListItemIcon>
             <PanelListItemLabel>불릿 리스트</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch style={{ pointerEvents: 'none' }}>
-            <ToggleInput type="checkbox" checked={activeFormats.insertUnorderedList} readOnly />
-            <ToggleSlider />
-          </ToggleSwitch>
+          <CustomToggle $checked={activeFormats.insertUnorderedList} />
         </PanelListItem>
         <PanelListItem 
           $interactive 
-          onMouseDown={(e) => { e.preventDefault(); exec('insertOrderedList'); }}
+          onMouseDown={(e) => { e.preventDefault(); execList('insertOrderedList'); }}
         >
           <PanelListItemLeft>
             <PanelListItemIcon><span style={{ fontSize: 11, fontWeight: 700 }}>1.</span></PanelListItemIcon>
             <PanelListItemLabel>번호 리스트</PanelListItemLabel>
           </PanelListItemLeft>
-          <ToggleSwitch style={{ pointerEvents: 'none' }}>
-            <ToggleInput type="checkbox" checked={activeFormats.insertOrderedList} readOnly />
-            <ToggleSlider />
-          </ToggleSwitch>
+          <CustomToggle $checked={activeFormats.insertOrderedList} />
         </PanelListItem>
       </PanelList>
     </>
@@ -819,10 +838,7 @@ export const AddMemoPage: React.FC = () => {
         <AiTagSection>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
             <AiTagLabel>AI 자동 요약 및 추천 태그</AiTagLabel>
-            <ToggleSwitch>
-              <ToggleInput type="checkbox" checked={useAi} onChange={() => setUseAi(!useAi)} />
-              <ToggleSlider />
-            </ToggleSwitch>
+            <CustomToggle $checked={useAi} onClick={() => setUseAi(!useAi)} style={{ cursor: 'pointer' }} />
           </div>
           {useAi && (
             <AiTagList style={{ marginTop: '8px' }}>
