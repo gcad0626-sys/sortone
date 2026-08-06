@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SortOne - 메모 상세보기</title>
+  <link rel="stylesheet" href="common.css" />
+  <link rel="stylesheet" href="detail.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- 상단 헤더 (공유, 편집, 삭제, 프로필 추가) -->
+    <header class="header">
+      <div class="header__left">
+        <button class="header__icon-btn" id="backBtn" type="button" aria-label="뒤로가기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+        </button>
+        <span class="header__logo">SortOne</span>
+      </div>
+      <div class="header__right">
+        <button class="header__icon-btn" id="shareBtn" type="button" aria-label="공유">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+          </svg>
+        </button>
+        <button class="header__icon-btn" id="editBtn" type="button" aria-label="편집">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+          </svg>
+        </button>
+        <button class="header__icon-btn" id="deleteBtn" type="button" aria-label="삭제">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <line x1="10" y1="11" x2="10" y2="17" />
+            <line x1="14" y1="11" x2="14" y2="17" />
+          </svg>
+        </button>
+        <span class="header__avatar">IY</span>
+      </div>
+    </header>
+
+    <!-- 메모 상세보기 화면 -->
+    <main class="screen">
+      <div class="screen__scroll">
+        <div class="detail-content">
+
+          <!-- AI 3줄 요약 카드 -->
+          <div class="summary-card">
+            <span class="summary-card__label">
+              <span class="summary-card__icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5z" />
+                </svg>
+              </span>
+              AI 3줄 요약
+            </span>
+            <!-- 카테고리 + 제목 메타 영역 -->
+            <div class="summary-card__meta" id="summaryMeta"></div>
+            <div class="summary-card__list" id="summaryList"></div>
+          </div>
+
+          <!-- 본문 카드 -->
+          <div class="body-card" id="bodyCard"></div>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 탭바 -->
+    <nav class="tabbar">
+      <a class="tabbar__item is-active" href="index.html">
+        <img src="Book.png" alt="Memo" />
+        Memo
+      </a>
+      <a class="tabbar__item" href="ai.html">
+        <img src="cat.png" alt="Ai" />
+        Ai
+      </a>
+      <a class="tabbar__item" href="search.html">
+        <img src="Search.png" alt="Search" />
+        Search
+      </a>
+      <a class="tabbar__item" href="profile.html">
+        <img src="Key.png" alt="Profile" />
+        Profile
+      </a>
+    </nav>
+    <!-- 커스텀 삭제 확인 모달 -->
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal">
+        <div class="modal__body">
+          <p class="modal__message">이 메모를 삭제하시겠습니까?</p>
+        </div>
+        <div class="modal__footer">
+          <button class="modal__btn modal__btn--cancel" id="modalCancelBtn" type="button">취소</button>
+          <button class="modal__btn modal__btn--confirm" id="modalConfirmBtn" type="button">확인</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="detail.js"></script>
+</body>
+
+</html>

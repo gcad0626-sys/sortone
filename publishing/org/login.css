@@ -1,0 +1,108 @@
+/* ==========================================================================
+   SortOne - login.css (로그인 화면)
+   ========================================================================== */
+
+.login-screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 28px;
+}
+
+.login-catchphrase {
+  margin-top: 100px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--color-text-on-primary);
+}
+
+.login-spacer {
+  flex: 1;
+}
+
+/* ---------- 소셜 로그인 버튼 ---------- */
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.social-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  border-radius: var(--radius-m);
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.social-btn svg,
+.social-btn img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.social-btn--kakao {
+  background-color: #FEE500;
+  color: #191600;
+}
+
+.social-btn--google {
+  background-color: var(--color-white);
+  color: #3C4043;
+}
+
+/* ---------- 구분선 ---------- */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.login-divider span {
+  font-size: 12px;
+  color: var(--color-text-on-primary-sub);
+}
+
+/* ---------- 하단 링크 ---------- */
+.login-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 48px;
+}
+
+.login-links__signup {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-on-primary);
+}
+
+.login-links__signin {
+  font-size: 13px;
+  color: var(--color-text-on-primary-sub);
+}
+
+.login-links__signin a {
+  text-decoration: underline;
+  color: var(--color-text-on-primary);
+  font-weight: 500;
+}

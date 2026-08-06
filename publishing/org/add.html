@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SortOne - 메모 작성</title>
+  <style>
+    html, body {
+      background-color: #E9EEF3;
+      margin: 0;
+      padding: 0;
+    }
+    .app {
+      background-color: #63A8ED;
+    }
+    @media (max-width: 480px) {
+      html, body {
+        background-color: #63A8ED;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="common.css" />
+  <link rel="stylesheet" href="add.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- 커스텀 알림 모달 -->
+    <div class="custom-modal-overlay" id="customModalOverlay" role="dialog" aria-modal="true" aria-labelledby="customModalMsg">
+      <div class="custom-modal">
+        <p class="custom-modal__msg" id="customModalMsg"></p>
+        <button class="custom-modal__btn" id="customModalConfirm" type="button">확인</button>
+      </div>
+    </div>
+
+
+    <!-- 상단 헤더 -->
+    <header class="header">
+      <div class="header__left">
+        <button class="header__icon-btn" id="backBtn" type="button" aria-label="뒤로가기">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+        <span class="header__logo">SortOne</span>
+      </div>
+      <div class="header__right">
+        <button class="header__icon-btn" type="button" aria-label="검색" onclick="location.href='search.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+        <span class="header__avatar" style="cursor:pointer;" onclick="location.href='profile.html'">IY</span>
+      </div>
+    </header>
+
+    <!-- 메모 작성 화면 -->
+    <main class="screen">
+      <div class="add-content">
+
+        <input type="text" id="titleInput" class="title-input" placeholder="제목을 입력하세요.." maxlength="60" />
+
+        <div class="content-box">
+          <div id="contentInput" class="content-input" contenteditable="true" placeholder="내용을 입력하세요.."></div>
+          <button class="save-btn" id="saveBtn" type="button" aria-label="저장">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="ai-tag-section">
+          <span class="ai-tag-section__label">AI 추천 태그</span>
+          <div class="ai-tag-list" id="aiTagList"></div>
+        </div>
+
+      </div>
+
+      <!-- 서식 패널 -->
+      <div class="format-panel-wrap">
+        <div class="format-panel" id="formatPanel"></div>
+      </div>
+
+      <!-- 하단 서식 툴바 -->
+      <div class="toolbar-wrap">
+        <div class="toolbar">
+          <button class="toolbar__btn" type="button" data-format="bold" aria-label="굵게">B</button>
+          <button class="toolbar__btn" type="button" data-format="italic" aria-label="기울임">
+            <span style="font-style: italic; font-family: serif;">I</span>
+          </button>
+          <div class="toolbar__divider"></div>
+          <button class="toolbar__btn" type="button" data-format="list" aria-label="목록">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="9" y1="6" x2="20" y2="6" />
+              <line x1="9" y1="12" x2="20" y2="12" />
+              <line x1="9" y1="18" x2="20" y2="18" />
+              <circle cx="4.5" cy="6" r="1" />
+              <circle cx="4.5" cy="12" r="1" />
+              <circle cx="4.5" cy="18" r="1" />
+            </svg>
+          </button>
+          <div class="toolbar__divider"></div>
+          <button class="toolbar__btn" type="button" data-format="image" aria-label="이미지 첨부">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+          </button>
+          <button class="toolbar__btn" type="button" data-format="link" aria-label="링크 첨부">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 탭바 -->
+    <nav class="tabbar">
+      <a class="tabbar__item is-active" href="index.html">
+        <img src="Book.png" alt="Memo" />
+        Memo
+      </a>
+      <a class="tabbar__item" href="ai.html">
+        <img src="cat.png" alt="Ai" />
+        Ai
+      </a>
+      <a class="tabbar__item" href="search.html">
+        <img src="Search.png" alt="Search" />
+        Search
+      </a>
+      <a class="tabbar__item" href="profile.html">
+        <img src="Key.png" alt="Profile" />
+        Profile
+      </a>
+    </nav>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="add.js"></script>
+</body>
+
+</html>

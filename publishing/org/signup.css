@@ -1,0 +1,169 @@
+/* ==========================================================================
+   SortOne - signup.css (이메일 가입 화면)
+   ========================================================================== */
+
+/* 헤더 투명화 & 밑줄 제거 */
+.signup-header {
+  border-bottom: none;
+  background-color: transparent;
+  padding-top: 10px;
+}
+
+.signup-header__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-on-primary);
+  margin-left: 6px;
+}
+
+.signup-screen {
+  padding: 0 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 인트로 텍스트 */
+.signup-intro {
+  margin-top: 16px;
+  margin-bottom: 36px;
+}
+
+.signup-intro__title {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text-on-primary);
+  margin-bottom: 12px;
+}
+
+.signup-intro__desc {
+  font-size: 13px;
+  color: var(--color-text-on-primary);
+  opacity: 0.9;
+}
+
+/* 폼 요소 */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-on-primary);
+  margin-left: 2px;
+}
+
+.form-input {
+  width: 100%;
+  height: 48px;
+  border-radius: var(--radius-s);
+  background-color: #F4F6F8;
+  padding: 0 16px;
+  font-size: 14px;
+  color: var(--color-text-main);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.form-input::placeholder {
+  color: #A9B3BD;
+}
+
+/* 약관 동의 체크박스 */
+.form-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  margin-bottom: 24px;
+}
+
+.form-checkbox input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background-color: var(--color-white);
+  border: 1px solid #CFD8E0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.form-checkbox input[type="checkbox"]:checked {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.form-checkbox input[type="checkbox"]:checked::after {
+  content: "✔";
+  color: #1D5B60;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-checkbox label {
+  font-size: 12px;
+  color: var(--color-text-on-primary);
+  cursor: pointer;
+}
+
+.form-checkbox label a {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+/* 가입 완료 버튼 */
+.signup-submit-btn {
+  width: 100%;
+  height: 52px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent);
+  color: #1D5B60;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(156, 234, 239, 0.25);
+  transition: transform 0.1s ease;
+}
+
+.signup-submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* 하단 여백 및 푸터 링크 */
+.signup-spacer {
+  flex: 1;
+}
+
+.signup-footer {
+  text-align: center;
+  padding-bottom: 48px;
+  margin-top: 30px;
+}
+
+.signup-footer__text {
+  font-size: 12px;
+  color: var(--color-text-on-primary);
+  opacity: 0.8;
+}
+
+.signup-footer__text a {
+  text-decoration: none;
+  font-weight: 700;
+  color: var(--color-text-on-primary);
+  margin-left: 4px;
+  opacity: 1;
+}

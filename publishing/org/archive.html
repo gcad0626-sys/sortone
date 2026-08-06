@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SortOne - 보관함</title>
+  <link rel="stylesheet" href="common.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+  <link rel="stylesheet" href="archive.css" />
+</head>
+
+<body>
+  <div class="app archive-app">
+    <!-- 헤더 -->
+    <header class="header archive-header">
+      <div class="header__left">
+        <button class="header__icon-btn" type="button" aria-label="메뉴">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <span class="header__logo">SortOne</span>
+      </div>
+      <div class="header__right">
+        <button class="header__icon-btn" type="button" aria-label="검색" onclick="location.href='search.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+        <span class="header__avatar" style="cursor:pointer;" onclick="location.href='profile.html'">IY</span>
+      </div>
+    </header>
+
+    <!-- 스크린 영역 -->
+    <main class="screen">
+      <div class="screen__scroll archive-content">
+        <div class="archive-title-area">
+          <h1 class="archive-title">보관함</h1>
+          <p class="archive-subtitle">보관된 메모는 검색에서만 제외되며 언제든지<br />복원할 수 있습니다.</p>
+        </div>
+
+        <div class="archive-list">
+          <!-- Card 1 -->
+          <div class="card archive-card">
+            <div class="archive-card__header">
+              <div class="archive-card__meta">
+                <span class="tag tag--default">Product Strategy</span>
+                <span class="archive-card__date">2023.11.14</span>
+              </div>
+              <button class="archive-card__restore-btn" type="button" aria-label="복원">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </button>
+            </div>
+            <h3 class="archive-card__title">2024 Q1 제품 로드맵 가안</h3>
+            <p class="archive-card__desc">올해 1분기 로드맵의 핵심 가치는 '사용자 경험의 고도화'와 '인공지능 통합'입니다. 우선순위 1순위는 스...</p>
+          </div>
+          <!-- Card 2 -->
+          <div class="card archive-card">
+            <div class="archive-card__header">
+              <div class="archive-card__meta">
+                <span class="tag tag--idea">Creative</span>
+                <span class="archive-card__date">2023.11.02</span>
+              </div>
+              <button class="archive-card__restore-btn" type="button" aria-label="복원">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </button>
+            </div>
+            <div class="archive-card__body-with-img">
+              <div class="archive-card__body-text">
+                <h3 class="archive-card__title">미니멀리즘 디자인 영감 모음</h3>
+                <p class="archive-card__desc">핀터레스트에서 수집한 2024 디자인 트렌드: Glassmorphism 2.0, Bento...</p>
+              </div>
+              <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=100&auto=format&fit=crop" class="archive-card__img" alt="미니멀리즘 디자인">
+            </div>
+          </div>
+          <!-- Card 3 -->
+          <div class="card archive-card">
+            <div class="archive-card__header">
+              <div class="archive-card__meta">
+                <span class="tag tag--personal">Archives</span>
+                <span class="archive-card__date">2023.10.28</span>
+              </div>
+              <button class="archive-card__restore-btn" type="button" aria-label="복원">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+              </button>
+            </div>
+            <h3 class="archive-card__title">개인용 구독 서비스 리스트</h3>
+            <p class="archive-card__desc">넷플릭스, 어도비 클라우드, 노션 프로 등 매달 지출되는 구독 서비스 목록 정리. 불필요한 서비스는 연말...</p>
+          </div>
+        </div>
+
+        <div class="archive-footer-text">
+          <p>이전의 소중한 생각들이 안전하게<br />보관되어 있습니다.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 탭바 -->
+    <nav class="tabbar">
+      <a class="tabbar__item" href="index.html">
+        <img src="Book.png" alt="Memo" />
+        Memo
+      </a>
+      <a class="tabbar__item" href="ai.html">
+        <img src="cat.png" alt="Ai" />
+        Ai
+      </a>
+      <a class="tabbar__item" href="search.html">
+        <img src="Search.png" alt="Search" />
+        Search
+      </a>
+      <a class="tabbar__item" href="profile.html">
+        <img src="Key.png" alt="Profile" />
+        Profile
+      </a>
+    </nav>
+
+    <!-- 햄버거 메뉴 (사이드 드로어, 공통 오버레이 컴포넌트) -->
+    <div class="sidebar-overlay" id="sidebarOverlay">
+      <div class="sidebar-drawer" id="sidebarDrawer">
+        <div class="sidebar-profile">
+          <img class="sidebar-profile__avatar" id="sidebarAvatar" src="" alt="프로필 사진" />
+          <div class="sidebar-profile__info">
+            <div class="sidebar-profile__name-row">
+              <span class="sidebar-profile__name" id="sidebarName"></span>
+              <span class="sidebar-profile__badge" id="sidebarBadge"></span>
+            </div>
+            <span class="sidebar-profile__email" id="sidebarEmail"></span>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <button class="sidebar-menu__item" type="button" data-category="모든 메모">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            모든 메모
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="개인">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            개인
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="업무">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            업무
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="아이디어">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+              <path d="M12 2a6 6 0 0 0-4 10.5c.6.5 1 1.3 1 2.5h6c0-1.2.4-2 1-2.5A6 6 0 0 0 12 2z" />
+            </svg>
+            아이디어
+          </button>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+          <button class="sidebar-menu__item" type="button" data-todo="보관함">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8" />
+              <rect x="1" y="3" width="22" height="5" />
+              <line x1="10" y1="12" x2="14" y2="12" />
+            </svg>
+            보관함
+          </button>
+          <button class="sidebar-menu__item" type="button" data-todo="휴지통">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+            </svg>
+            휴지통
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="sidebar-footer">
+          <button class="sidebar-menu__item sidebar-menu__item--danger" type="button" id="sidebarLogoutBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            로그아웃
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+
+</html>

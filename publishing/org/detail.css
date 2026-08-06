@@ -1,0 +1,233 @@
+/* ==========================================================================
+   SortOne - detail.css (메모 상세보기 화면)
+   ========================================================================== */
+
+.detail-content {
+  padding: 20px 18px 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- AI 3줄 요약 카드 ---------- */
+.summary-card {
+  background-color: #F1F7CE;
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+  padding: 20px 26px; /* 양쪽 패딩 증가 */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary-card__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #5C6B1F;
+}
+
+.summary-card__icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: #2B3A4A;
+  color: #F1F7CE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.summary-card__icon svg {
+  width: 12px;
+  height: 12px;
+}
+
+.summary-card__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summary-card__item {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4A5518;
+}
+
+.summary-card__bullet {
+  flex-shrink: 0;
+  color: #8C9A3C;
+}
+
+.summary-card__empty {
+  font-size: 13px;
+  color: #7C8A44;
+}
+
+/* AI 요약 카드 - 카테고리 + 제목 메타 영역 */
+.summary-card__meta {
+  margin-bottom: 2px;
+}
+
+.summary-card__meta-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.summary-card__meta-tag {
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.summary-card__meta-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #3A4A10;
+  line-height: 1.4;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- 본문 카드 ---------- */
+.body-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+  padding: 24px 28px; /* 양쪽 패딩 증가 */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+
+.body-card:active {
+  transform: scale(0.98);
+}
+
+.body-card__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.body-card__meta {
+  font-size: 12px;
+  color: var(--color-text-sub);
+  margin-top: -10px;
+}
+
+.body-card__paragraph {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--color-text-main);
+  white-space: pre-line;
+}
+
+.body-card__tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* ---------- 커스텀 삭제 확인 모달 ---------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(2px);
+}
+
+.modal-overlay.is-active {
+  display: flex;
+  animation: modal-fade-in 0.2s ease-out forwards;
+}
+
+.modal {
+  width: 230px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-l);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.92);
+  animation: modal-scale-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.modal__body {
+  padding: 20px 16px 14px;
+  text-align: center;
+}
+
+.modal__message {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-main);
+  line-height: 1.5;
+}
+
+.modal__footer {
+  display: flex;
+  border-top: 1px solid #F0F0F0;
+}
+
+.modal__btn {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.15s ease;
+  font-family: inherit;
+}
+
+.modal__btn--cancel {
+  color: var(--color-text-sub);
+  border-right: 1px solid #F0F0F0;
+}
+
+.modal__btn--cancel:hover {
+  background-color: #F8F9FA;
+}
+
+.modal__btn--confirm {
+  color: #1D5B60;
+  background-color: var(--color-accent);
+}
+
+.modal__btn--confirm:hover {
+  background-color: #8AE0E6;
+}
+
+@keyframes modal-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-scale-in {
+  from { transform: scale(0.92); }
+  to { transform: scale(1); }
+}

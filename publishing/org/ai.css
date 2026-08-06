@@ -1,0 +1,249 @@
+/* ==========================================================================
+   SortOne - ai.css (AI 자동분류 상세 / Ai 탭 화면)
+   ========================================================================== */
+
+.ai-content {
+  padding: 20px 18px 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+/* ---------- Weekly Insight 카드 ---------- */
+.insight-card {
+  background: linear-gradient(160deg, #FFFFFF 0%, #EAF7F4 100%);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.insight-card__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #8FA6A0;
+}
+
+.insight-card__title {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.insight-card__desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #56677A;
+}
+
+.insight-card__desc .highlight {
+  color: #35B37E;
+  font-weight: 700;
+}
+
+.insight-card__stats {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.insight-stat {
+  flex: 1;
+  background-color: var(--color-white);
+  border-radius: var(--radius-m);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.insight-stat__label {
+  font-size: 11px;
+  color: #8B99A6;
+}
+
+.insight-stat__value {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.insight-stat__value.is-positive {
+  color: #35B37E;
+}
+
+/* ---------- 공통 섹션(분석 현황 / 실행 항목) ---------- */
+.ai-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-section__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-on-primary);
+}
+
+.ai-section__more {
+  color: var(--color-text-on-primary-sub);
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 6px;
+}
+
+/* 더보기 드롭다운 래퍼 */
+.ai-section__more-wrap {
+  position: relative;
+}
+
+
+
+.ai-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- 분석 현황 카드 ---------- */
+.analysis-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+}
+
+.analysis-item__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-main);
+}
+
+.analysis-item__value {
+  font-size: 13px;
+  font-weight: 700;
+  color: #8B99A6;
+}
+
+.analysis-item__value.is-done {
+  color: #35B37E;
+}
+
+/* ---------- 실행 항목 카드 ---------- */
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.action-item__badge {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: var(--radius-s);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.action-item__badge--work {
+  background-color: var(--tag-priority-bg);
+  color: var(--tag-priority-text);
+}
+
+.action-item__badge--idea {
+  background-color: var(--tag-idea-bg);
+  color: var(--tag-idea-text);
+}
+
+.action-item__text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-main);
+  transition: color 0.15s ease;
+}
+
+/* ---------- 동그라미 체크 박스 및 완료선 ---------- */
+.action-item {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s ease;
+}
+
+.action-item__checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-white);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.action-item__checkbox::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid var(--color-white);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg) translate(-0.5px, -0.5px);
+  display: none;
+}
+
+.action-item.is-checked .action-item__checkbox {
+  background-color: #35B37E;
+  border-color: #35B37E;
+}
+
+.action-item.is-checked .action-item__checkbox::after {
+  display: block;
+}
+
+.action-item.is-checked .action-item__text {
+  text-decoration: line-through;
+  color: #A0AEC0;
+}
+
+.action-item__badge--personal {
+  background-color: var(--tag-personal-bg);
+  color: var(--tag-personal-text);
+}
+
+/* 분석 현황 개별 삭제 X 버튼 */
+.analysis-item__delete {
+  background: none;
+  border: none;
+  color: #C4CDD6;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  transition: color 0.15s ease, transform 0.1s ease;
+  flex-shrink: 0;
+}
+.analysis-item__delete:hover {
+  color: #EF4444;
+}
+.analysis-item__delete:active {
+  transform: scale(0.9);
+}
+.analysis-item__delete svg {
+  width: 14px;
+  height: 14px;
+}

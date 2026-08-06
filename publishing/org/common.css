@@ -1,0 +1,417 @@
+/* ==========================================================================
+   SortOne - common.css
+   공통 변수, 리셋, 폰트, 공통 컴포넌트(헤더/탭바/카드/태그/버튼/FAB)
+   ========================================================================== */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+@import url('https://fonts.googleapis.com/css2?family=Annie+Use+Your+Telescope&display=swap');
+
+:root {
+  /* Color */
+  --color-primary: #63A8ED;      /* 배경 메인 컬러 */
+  --color-primary-dark: #4F91D6; /* 배경 위 보더/그림자용 다크톤 */
+  --color-accent: #9CEAEF;       /* 포인트 컬러 (FAB, 저장버튼 등) */
+  --color-white: #FFFFFF;
+  --color-text-main: #2B3A4A;    /* 카드 위 진한 본문 텍스트 */
+  --color-text-sub: #6B7C8D;     /* 카드 위 보조 텍스트(날짜, 요약) */
+  --color-text-on-primary: #FFFFFF; /* 배경(파란색) 위의 텍스트 */
+  --color-text-on-primary-sub: #E7F1FD; /* 배경 위 흐린 텍스트(placeholder 등) */
+
+  /* 태그 칩 색상 (비비드 파스텔) */
+  --tag-work-bg: #FFE7D6;
+  --tag-work-text: #FF6F1C;
+  --tag-personal-bg: #E0F0FF;
+  --tag-personal-text: #1E82FF;
+  --tag-idea-bg: #E8FCE0;
+  --tag-idea-text: #3EB312;
+  --tag-priority-bg: #FFE5EC;
+  --tag-priority-text: #FF2E63;
+
+  /* 중요 메모 카드 */
+  --important-card-bg: #FBD7E4;
+
+  /* Radius */
+  --radius-s: 10px;
+  --radius-m: 16px;
+  --radius-l: 22px;
+  --radius-pill: 999px;
+
+  /* Shadow */
+  --shadow-card: 0 4px 14px rgba(30, 60, 100, 0.12);
+  --shadow-fab: 0 6px 16px rgba(0, 0, 0, 0.2);
+
+  /* Layout */
+  --app-max-width: 480px;
+  --header-height: 56px;
+  --tabbar-height: 64px;
+
+  /* Font */
+  --font-logo: 'Annie Use Your Telescope', cursive;
+  --font-base: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+/* ---------- Reset ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  overflow-y: scroll; /* 스크롤바 공간을 항상 고정 확보하여 카테고리 전환 시 화면이 좌우로 튕기는 현상 해결 */
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-base);
+  color: var(--color-text-main);
+  background-color: #E9EEF3; /* 480px 밖 영역(뷰포트가 넓을 때) 배경 */
+  -webkit-font-smoothing: antialiased;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+input, textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ---------- App Shell (모바일 우선, max-width 480px 중앙 정렬) ---------- */
+.app {
+  position: relative;
+  width: 100%;
+  max-width: var(--app-max-width);
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: var(--color-primary);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: app-fade-in 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes app-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- 공통 헤더 ---------- */
+.header {
+  flex-shrink: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.5);
+}
+
+.header__left,
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header__icon-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-on-primary);
+}
+
+.header__logo {
+  font-family: var(--font-logo);
+  font-size: 22px;
+  color: var(--color-text-on-primary);
+  letter-spacing: 0.5px;
+}
+
+.header__avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: #1D5B60;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- 공통 하단 탭바 ---------- */
+.tabbar {
+  flex-shrink: 0;
+  height: var(--tabbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--color-white);
+  border-top: 1px solid #EDEDED;
+}
+
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 0;
+  color: #A9B3BD;
+  font-size: 11px;
+}
+
+.tabbar__item svg,
+.tabbar__item img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* 비활성 탭바 아이콘 색상 (#A9B3BD) 필터 */
+.tabbar__item img {
+  filter: invert(68%) sepia(8%) saturate(692%) hue-rotate(173deg) brightness(93%) contrast(88%);
+}
+
+/* 활성 탭바 아이콘 색상 (#63A8ED) 필터 */
+.tabbar__item.is-active img {
+  filter: invert(62%) sepia(35%) saturate(1243%) hue-rotate(185deg) brightness(98%) contrast(92%);
+}
+
+.tabbar__item.is-active {
+  color: var(--color-primary);
+  background-color: #F3EAF6;
+  border-radius: var(--radius-m);
+  margin: 0 4px;
+}
+
+/* ---------- 공통 태그 칩 ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tag--work { background-color: var(--tag-work-bg); color: var(--tag-work-text); }
+.tag--personal { background-color: var(--tag-personal-bg); color: var(--tag-personal-text); }
+.tag--idea { background-color: var(--tag-idea-bg); color: var(--tag-idea-text); }
+.tag--priority { background-color: var(--tag-priority-bg); color: var(--tag-priority-text); }
+.tag--default { background-color: #E7EEF5; color: #5C7A99; }
+
+/* ---------- 공통 카드 ---------- */
+.card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+  padding: 18px;
+}
+
+/* ---------- 공통 FAB ---------- */
+.fab {
+  position: absolute;
+  right: 20px;
+  bottom: calc(var(--tabbar-height) + 18px);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  color: #1D5B60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-fab);
+  transition: transform 0.15s ease;
+}
+
+.fab:active {
+  transform: scale(0.92);
+}
+
+.fab svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* ---------- 스크린 컨테이너 공통 ---------- */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.screen__scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 스크롤바 살짝 숨김 처리(모바일 느낌) */
+.screen__scroll::-webkit-scrollbar {
+  width: 0;
+}
+
+/* 리치 에디터 및 카드 프리뷰 내부의 리스트 스타일 복구 */
+.content-input ul,
+.content-preview ul,
+.memo-card__desc ul,
+.important-card__desc ul,
+.body-card__paragraph ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.content-input ol,
+.content-preview ol,
+.memo-card__desc ol,
+.important-card__desc ol,
+.body-card__paragraph ol {
+  list-style: decimal;
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.content-input li,
+.content-preview li,
+.memo-card__desc li,
+.important-card__desc li,
+.body-card__paragraph li {
+  margin-bottom: 4px;
+}
+
+/* ---------- 드롭다운 공통 스타일 ---------- */
+.sort-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background-color: var(--color-white);
+  border-radius: var(--radius-s);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: none;
+  flex-direction: column;
+  padding: 6px;
+  z-index: 100;
+  min-width: 140px; /* 여러 곳에 쓰이므로 최소 너비 약간 증가 */
+}
+
+.sort-dropdown.is-active {
+  display: flex;
+  animation: dropdown-fade-in 0.2s ease-out forwards;
+}
+
+.sort-dropdown__item {
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--color-text-main);
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.sort-dropdown__item:hover {
+  background-color: #F3EAF6;
+}
+
+.sort-dropdown__item.is-active {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.sort-dropdown__divider {
+  height: 1px;
+  background-color: #EDF2F7;
+  margin: 4px 0;
+}
+
+.sort-dropdown__item--reset {
+  color: #EF4444;
+}
+
+@keyframes dropdown-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 미니멀한 더보기 / 접기 아이콘 버튼 공통 스타일 */
+.btn-show-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin: 12px auto 4px;
+  background-color: #FFFFFF;
+  color: #A0AEC0;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #E2E8F0;
+  transition: all 0.2s ease;
+}
+
+.btn-show-more svg {
+  width: 20px;
+  height: 20px;
+}
+
+.btn-show-more:hover {
+  background-color: #9CEAEF;
+  color: #FFFFFF;
+  border-color: #9CEAEF;
+}
+
+.content-input li,
+.content-preview li,
+.memo-card__desc li,
+.important-card__desc li {
+  margin-bottom: 4px;
+}

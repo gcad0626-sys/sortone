@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SortOne - 이메일 가입</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="signup.css">
+</head>
+
+<body>
+  <div class="app">
+    <!-- 헤더 -->
+    <header class="header signup-header">
+      <div class="header__left">
+        <button class="header__icon-btn" type="button" aria-label="뒤로가기" onclick="history.back()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </button>
+        <h1 class="signup-header__title">이메일 가입</h1>
+      </div>
+    </header>
+
+    <!-- 가입 폼 화면 -->
+    <main class="screen signup-screen">
+      <div class="signup-intro">
+        <h2 class="signup-intro__title">새로운 시작을 위해<br>정보를 입력해주세요</h2>
+        <p class="signup-intro__desc">SortOne과 함께 효율적인 일상을 만들어보세요.</p>
+      </div>
+
+      <form class="signup-form" id="signupForm">
+        <div class="form-group">
+          <label class="form-label" for="emailInput">이메일 주소</label>
+          <input class="form-input" type="email" id="emailInput" placeholder="example@sortone.ai" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="passwordInput">비밀번호</label>
+          <input class="form-input" type="password" id="passwordInput" placeholder="8자 이상 입력하세요" required minlength="8">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="passwordConfirmInput">비밀번호 확인</label>
+          <input class="form-input" type="password" id="passwordConfirmInput" placeholder="비밀번호를 다시 입력하세요" required>
+        </div>
+
+        <div class="form-checkbox">
+          <input type="checkbox" id="termsCheck" required>
+          <label for="termsCheck"><a href="#">이용약관</a> 및 <a href="#">개인정보 처리방침</a>에 동의합니다.</label>
+        </div>
+
+        <button class="signup-submit-btn" type="submit">가입 완료</button>
+      </form>
+
+      <div class="signup-spacer"></div>
+
+      <div class="signup-footer">
+        <span class="signup-footer__text">이미 계정이 있으신가요? <a href="login.html">로그인</a></span>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // 비밀번호 일치 확인 등 간단한 로직 추가 가능
+      var pw1 = document.getElementById('passwordInput').value;
+      var pw2 = document.getElementById('passwordConfirmInput').value;
+      
+      if(pw1 !== pw2) {
+        alert('비밀번호가 일치하지 않습니다.');
+        return;
+      }
+      
+      alert('회원가입이 완료되었습니다.');
+      location.href = 'login.html';
+    });
+  </script>
+</body>
+
+</html>

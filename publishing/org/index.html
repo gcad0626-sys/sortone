@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SortOne - 메모</title>
+  <style>
+    html, body {
+      background-color: #E9EEF3;
+      margin: 0;
+      padding: 0;
+    }
+    .app {
+      background-color: #63A8ED;
+    }
+    @media (max-width: 480px) {
+      html, body {
+        background-color: #63A8ED;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="common.css" />
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- 상단 헤더 -->
+    <header class="header">
+      <div class="header__left">
+        <button class="header__icon-btn" type="button" aria-label="메뉴">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <span class="header__logo">SortOne</span>
+      </div>
+      <div class="header__right">
+        <button class="header__icon-btn" type="button" aria-label="검색" onclick="location.href='search.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+        <span class="header__avatar" style="cursor:pointer;" onclick="location.href='profile.html'">IY</span>
+      </div>
+    </header>
+
+    <!-- 메인 화면 -->
+    <main class="screen">
+      <div class="screen__scroll">
+        <div class="main-content">
+
+          <!-- 카테고리 필터 -->
+          <nav class="category-filter" id="categoryFilter"></nav>
+
+          <!-- 중요 메모 -->
+          <section class="section" id="importantSection">
+            <div class="section__header">
+              <span class="section__title">
+                <img src="Pin.png" alt="pin" />
+                중요 메모
+              </span>
+            </div>
+            <div id="importantList"></div>
+          </section>
+
+          <!-- 최신 메모 -->
+          <section class="section">
+            <div class="section__header">
+              <span class="section__title section__title--indented">최신 메모</span>
+              <div class="sort-selector">
+                <button class="section__sort" id="sortBtn" type="button">
+                  <span id="sortLabel">최신순</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+                <div class="sort-dropdown" id="sortDropdown">
+                  <button class="sort-dropdown__item is-active" data-sort="latest" type="button">최신순</button>
+                  <button class="sort-dropdown__item" data-sort="oldest" type="button">오래된순</button>
+                </div>
+              </div>
+            </div>
+            <div class="memo-list" id="memoList"></div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- 메모 추가 버튼 -->
+      <button class="fab" id="fabAddBtn" type="button" aria-label="메모 추가">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </button>
+    </main>
+
+    <!-- 하단 탭바 -->
+    <nav class="tabbar">
+      <a class="tabbar__item is-active" href="index.html">
+        <img src="Book.png" alt="Memo" />
+        Memo
+      </a>
+      <a class="tabbar__item" href="ai.html">
+        <img src="cat.png" alt="Ai" />
+        Ai
+      </a>
+      <a class="tabbar__item" href="search.html">
+        <img src="Search.png" alt="Search" />
+        Search
+      </a>
+      <a class="tabbar__item" href="profile.html">
+        <img src="Key.png" alt="Profile" />
+        Profile
+      </a>
+    </nav>
+
+    <!-- 커스텀 삭제 확인 모달 -->
+    <div class="modal-overlay" id="deleteModal">
+      <div class="modal">
+        <div class="modal__body">
+          <p class="modal__message">이 메모를 삭제하시겠습니까?</p>
+        </div>
+        <div class="modal__footer">
+          <button class="modal__btn modal__btn--cancel" id="modalCancelBtn" type="button">취소</button>
+          <button class="modal__btn modal__btn--confirm" id="modalConfirmBtn" type="button">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 카테고리 편집/추가/삭제 모달 -->
+    <div class="modal-overlay" id="categoryModal">
+      <div class="modal" style="width: 290px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.12); border: none; overflow: hidden;">
+        <div class="modal__body" style="padding: 24px 16px 14px; text-align: center;">
+          <p class="modal__message" style="font-weight: 700; margin-bottom: 16px; font-size: 15px; color: var(--color-text-main);">카테고리 편집</p>
+          
+          <div style="display: flex; gap: 6px; margin-bottom: 16px; align-items: center; width: 100%;">
+            <input type="text" id="newCategoryInput" placeholder="새 카테고리 추가" style="flex: 1; min-width: 0; border: 1px solid #E2E8F0; border-radius: 999px; padding: 8px 12px; font-size: 12px; background-color: #F8FAFC;" />
+            <button type="button" id="addCategoryBtn" style="background-color: #FFAE7C; color: white; border-radius: 999px; padding: 8px 14px; font-size: 12px; font-weight: 700; white-space: nowrap; min-width: 50px; border: none; box-shadow: 0 2px 6px rgba(255, 174, 124, 0.3);">추가</button>
+          </div>
+          
+          <div id="modalCategoryList" style="max-height: 180px; overflow-y: auto; text-align: left; display: flex; flex-direction: column; gap: 8px; padding: 2px 0; scrollbar-width: none;"></div>
+        </div>
+        <div class="modal__footer" style="border-top: 1px solid #F1F5F9; display: flex; justify-content: center;">
+          <button class="modal__btn" id="categoryModalCloseBtn" type="button" style="color: var(--color-text-sub); font-size: 13px; padding: 14px; width: 100%; border: none; background: none; font-weight: 600;">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 햄버거 메뉴 (사이드 드로어, 공통 오버레이 컴포넌트) -->
+    <div class="sidebar-overlay" id="sidebarOverlay">
+      <div class="sidebar-drawer" id="sidebarDrawer">
+
+        <div class="sidebar-profile">
+          <img class="sidebar-profile__avatar" id="sidebarAvatar" src="" alt="프로필 사진" />
+          <div class="sidebar-profile__info">
+            <div class="sidebar-profile__name-row">
+              <span class="sidebar-profile__name" id="sidebarName"></span>
+              <span class="sidebar-profile__badge" id="sidebarBadge"></span>
+            </div>
+            <span class="sidebar-profile__email" id="sidebarEmail"></span>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <button class="sidebar-menu__item" type="button" data-category="전체">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+              <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" />
+              <line x1="9" y1="13" x2="15" y2="13" />
+              <line x1="9" y1="17" x2="13" y2="17" />
+            </svg>
+            전체 메모
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="개인">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            개인
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="업무">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            업무
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="아이디어">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+              <path d="M12 2a6 6 0 0 0-4 10.5c.6.5 1 1.3 1 2.5h6c0-1.2.4-2 1-2.5A6 6 0 0 0 12 2z" />
+            </svg>
+            아이디어
+          </button>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+          <button class="sidebar-menu__item" type="button" data-todo="보관함">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8" />
+              <rect x="1" y="3" width="22" height="5" />
+              <line x1="10" y1="12" x2="14" y2="12" />
+            </svg>
+            보관함
+          </button>
+          <button class="sidebar-menu__item" type="button" data-todo="휴지통">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+            </svg>
+            휴지통
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="sidebar-footer">
+          <button class="sidebar-menu__item sidebar-menu__item--danger" type="button" id="sidebarLogoutBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            로그아웃
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="index.js"></script>
+</body>
+
+</html>

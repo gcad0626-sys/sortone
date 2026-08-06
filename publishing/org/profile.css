@@ -1,0 +1,408 @@
+/* ==========================================================================
+   SortOne - profile.css (프로필 화면)
+   ========================================================================== */
+
+.profile-content {
+  padding: 24px 18px 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ---------- 프로필 정보 영역 ---------- */
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-avatar-wrap {
+  position: relative;
+  width: 96px;
+  height: 96px;
+}
+
+.profile-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+}
+
+.profile-avatar-edit {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #2B3A4A;
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-primary);
+}
+
+.profile-avatar-edit svg {
+  width: 14px;
+  height: 14px;
+}
+
+.profile-info__name {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--color-text-on-primary);
+}
+
+.profile-info__email {
+  font-size: 13px;
+  color: var(--color-text-on-primary-sub);
+  margin-top: -6px;
+}
+
+.profile-info__badges {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.profile-badge {
+  padding: 5px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 500;
+  background-color: rgba(255, 255, 255, 0.25);
+  color: var(--color-text-on-primary);
+}
+
+/* ---------- 공통 카드 섹션 ---------- */
+.profile-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-card);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  padding-bottom: 14px;
+}
+
+.profile-card__title svg {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary);
+}
+
+/* ---------- 지능형 관리 카드 ---------- */
+.ai-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ai-toggle-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-toggle-row__label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.ai-toggle-row__desc {
+  font-size: 12px;
+  color: var(--color-text-sub);
+  line-height: 1.5;
+}
+
+.toggle-switch {
+  flex-shrink: 0;
+  width: 46px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background-color: #D9DFE5;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease;
+}
+
+.toggle-switch.is-on {
+  background-color: var(--color-accent);
+}
+
+.toggle-switch.is-on::after {
+  transform: translateX(20px);
+}
+
+/* ---------- 계정 및 데이터 카드 ---------- */
+.data-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.data-list__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-m);
+  background-color: #F7F5F2;
+}
+
+.data-list__item svg:first-child {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  color: #7A8794;
+}
+
+.data-list__item span {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-text-main);
+}
+
+.data-list__item .chevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: #B7C0C9;
+}
+
+/* ---------- 액션 버튼 ---------- */
+.action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px;
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.action-btn--logout {
+  background-color: var(--color-accent);
+  color: #1D5B60;
+}
+
+.action-btn--danger {
+  background-color: #FBB98A;
+  color: #8A3A0E;
+}
+
+/* ==========================================================================
+   �˾� (���) ��Ÿ��
+   ========================================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--app-max-width);
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modal-overlay--blue {
+  background-color: rgba(94, 169, 235, 0.95); /* �Ķ��� ��� �������� */
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 320px;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-card--list {
+  align-items: stretch;
+  text-align: left;
+  padding: 24px;
+}
+
+.modal-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.modal-card__title--left {
+  text-align: left;
+}
+
+.modal-card__desc {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-card__desc--left {
+  text-align: left;
+}
+
+.text-danger {
+  color: #E25C5C;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.modal-btn:active {
+  opacity: 0.8;
+}
+
+.modal-btn--cyan {
+  background-color: #84DFE2;
+  color: #1D5B60;
+  margin-bottom: 8px;
+}
+
+.modal-btn--text {
+  background-color: transparent;
+  color: #666;
+  font-weight: 500;
+}
+
+.modal-btn--small {
+  width: auto;
+  padding: 10px 24px;
+  border-radius: 20px;
+  margin-bottom: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-actions--right {
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+/* ������ ��� �� ���� ����Ʈ ��Ÿ�� */
+.modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.modal-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background-color: #F8F9FA;
+  border-radius: 8px;
+  border: 1px solid #E9ECEF;
+  text-align: left;
+  cursor: pointer;
+}
+
+.modal-list__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modal-list__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+}
+
+.modal-list__sub {
+  font-size: 12px;
+  color: #888;
+}
+
+.modal-list__item .chevron {
+  width: 16px;
+  height: 16px;
+  color: #999;
+}
+
+/* ����Ʈ ��Ÿ�� ��ư */
+.modal-select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+.modal-select-btn .chevron {
+  width: 16px;
+  height: 16px;
+  color: #999;
+}
+

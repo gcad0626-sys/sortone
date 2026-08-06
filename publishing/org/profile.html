@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>SortOne - 프로필</title>
+  <link rel="stylesheet" href="common.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="stylesheet" href="sidebar.css" />
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- 상단 헤더 -->
+    <header class="header">
+      <div class="header__left">
+        <button class="header__icon-btn" type="button" aria-label="메뉴">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+        <span class="header__logo">SortOne</span>
+      </div>
+      <div class="header__right">
+        <button class="header__icon-btn" type="button" aria-label="검색" onclick="location.href='search.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+        <span class="header__avatar" style="cursor:pointer;" onclick="location.href='profile.html'">IY</span>
+      </div>
+    </header>
+
+    <!-- 프로필 화면 -->
+    <main class="screen">
+      <div class="screen__scroll">
+        <div class="profile-content">
+
+          <!-- 프로필 정보 -->
+          <div class="profile-info">
+            <div class="profile-avatar-wrap">
+              <img class="profile-avatar" id="profileAvatar" src="" alt="프로필 사진" />
+              <button class="profile-avatar-edit" type="button" aria-label="프로필 사진 편집">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
+                </svg>
+              </button>
+            </div>
+            <h1 class="profile-info__name" id="profileName"></h1>
+            <span class="profile-info__email" id="profileEmail"></span>
+            <div class="profile-info__badges">
+              <span class="profile-badge" id="profileMembership"></span>
+              <span class="profile-badge" id="profileActiveSince"></span>
+            </div>
+          </div>
+
+          <!-- 지능형 관리 -->
+          <section class="profile-card">
+            <div class="ai-toggle-row">
+              <div class="ai-toggle-row__text">
+                <span class="ai-toggle-row__label">AI 자동 분류 모드</span>
+                <span class="ai-toggle-row__desc">입력된 메모를 AI가 자동으로 카테고리화합니다.</span>
+              </div>
+              <button class="toggle-switch" id="aiToggle" type="button" role="switch" aria-checked="true"
+                aria-label="AI 자동 분류 모드"></button>
+            </div>
+          </section>
+
+          <!-- 계정 및 데이터 -->
+          <section class="profile-card">
+            <span class="profile-card__title">
+              계정 및 데이터
+            </span>
+            <div class="data-list">
+              <button class="data-list__item" id="openBackupRecoveryBtn" type="button">
+                <span>데이터 백업 및 복구</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+              <button class="data-list__item" id="openExportActivityBtn" type="button">
+                <span>활동 기록 내보내기</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+          </section>
+
+          <!-- 로그아웃 / 계정 삭제 -->
+          <button class="action-btn action-btn--logout" id="logoutBtn" type="button">
+            로그아웃
+          </button>
+          <button class="action-btn action-btn--danger" id="deleteAccountBtn" type="button">
+            계정 삭제
+          </button>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- 하단 탭바 -->
+    <nav class="tabbar">
+      <a class="tabbar__item" href="index.html">
+        <img src="Book.png" alt="Memo" />
+        Memo
+      </a>
+      <a class="tabbar__item" href="ai.html">
+        <img src="cat.png" alt="Ai" />
+        Ai
+      </a>
+      <a class="tabbar__item" href="search.html">
+        <img src="Search.png" alt="Search" />
+        Search
+      </a>
+      <a class="tabbar__item is-active" href="profile.html">
+        <img src="Key.png" alt="Profile" />
+        Profile
+      </a>
+    </nav>
+
+    <!-- 햄버거 메뉴 (사이드 드로어, 공통 오버레이 컴포넌트) -->
+    <div class="sidebar-overlay" id="sidebarOverlay">
+      <div class="sidebar-drawer" id="sidebarDrawer">
+
+        <div class="sidebar-profile">
+          <img class="sidebar-profile__avatar" id="sidebarAvatar" src="" alt="프로필 사진" />
+          <div class="sidebar-profile__info">
+            <div class="sidebar-profile__name-row">
+              <span class="sidebar-profile__name" id="sidebarName"></span>
+              <span class="sidebar-profile__badge" id="sidebarBadge"></span>
+            </div>
+            <span class="sidebar-profile__email" id="sidebarEmail"></span>
+          </div>
+        </div>
+
+        <nav class="sidebar-menu">
+          <button class="sidebar-menu__item" type="button" data-category="전체">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+              <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z" />
+              <line x1="9" y1="13" x2="15" y2="13" />
+              <line x1="9" y1="17" x2="13" y2="17" />
+            </svg>
+            전체 메모
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="개인">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            개인
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="업무">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+            </svg>
+            업무
+          </button>
+          <button class="sidebar-menu__item" type="button" data-category="아이디어">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M9 18h6" />
+              <path d="M10 22h4" />
+              <path d="M12 2a6 6 0 0 0-4 10.5c.6.5 1 1.3 1 2.5h6c0-1.2.4-2 1-2.5A6 6 0 0 0 12 2z" />
+            </svg>
+            아이디어
+          </button>
+        </nav>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+          <button class="sidebar-menu__item" type="button" data-todo="보관함">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8" />
+              <rect x="1" y="3" width="22" height="5" />
+              <line x1="10" y1="12" x2="14" y2="12" />
+            </svg>
+            보관함
+          </button>
+          <button class="sidebar-menu__item" type="button" data-todo="휴지통">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+            </svg>
+            휴지통
+          </button>
+        </nav>
+
+        <div class="sidebar-spacer"></div>
+
+        <div class="sidebar-footer">
+          <button class="sidebar-menu__item sidebar-menu__item--danger" type="button" id="sidebarLogoutBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            로그아웃
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 모달 컨테이너들 -->
+    <!-- 1. 계정 삭제 모달 -->
+    <div class="modal-overlay" id="deleteAccountModal" style="display: none;">
+      <div class="modal-card">
+        <h2 class="modal-card__title">계정 삭제</h2>
+        <p class="modal-card__desc">계정을 삭제하면 모든 메모와 데이터가<br>영구적으로 삭제되며 복구할 수 없습니다.<br>정말 삭제하시겠습니까?</p>
+        <button class="modal-btn modal-btn--cyan" id="confirmDeleteBtn" type="button">영구삭제</button>
+        <button class="modal-btn modal-btn--text" id="cancelDeleteBtn" type="button">취소</button>
+      </div>
+    </div>
+
+    <!-- 2. 삭제 완료 모달 -->
+    <div class="modal-overlay" id="deleteCompleteModal" style="display: none;">
+      <div class="modal-card">
+        <h2 class="modal-card__title">삭제 완료</h2>
+        <p class="modal-card__desc">모든 데이터가 안전하게 삭제되었습니다.<br>그동안 SortOne AI를 이용해 주셔서 감사합니다.</p>
+        <button class="modal-btn modal-btn--cyan" id="closeDeleteCompleteBtn" type="button">확인</button>
+      </div>
+    </div>
+
+    <!-- 3. 데이터 백업 및 복구 모달 -->
+    <div class="modal-overlay" id="backupRecoveryModal" style="display: none;">
+      <div class="modal-card modal-card--list">
+        <h2 class="modal-card__title modal-card__title--left">데이터 백업 및 복구</h2>
+        <p class="modal-card__desc modal-card__desc--left">메모와 데이터를 안전하게 백업하거나 이전 상태로<br>복구할 수 있습니다.</p>
+        
+        <div class="modal-list">
+          <button class="modal-list__item" id="goToBackupBtn" type="button">
+            <div class="modal-list__text">
+              <span class="modal-list__title">데이터 백업하기</span>
+              <span class="modal-list__sub">현재 상태를 클라우드에 저장합니다</span>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+          <button class="modal-list__item" id="goToRestoreBtn" type="button">
+            <div class="modal-list__text">
+              <span class="modal-list__title">데이터 복구하기</span>
+              <span class="modal-list__sub">이전 백업 시점으로 되돌립니다</span>
+            </div>
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-actions modal-actions--right">
+          <button class="modal-btn modal-btn--cyan modal-btn--small" id="closeBackupRecoveryBtn" type="button">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 활동내역 내보내기 모달 -->
+    <div class="modal-overlay" id="exportActivityModal" style="display: none;">
+      <div class="modal-card modal-card--list">
+        <h2 class="modal-card__title modal-card__title--left">활동 내역 내보내기</h2>
+        <p class="modal-card__desc modal-card__desc--left">지금까지의 메모 활동 내역을 파일로 저장하<br>거나 외부로 공유할 수 있습니다.</p>
+        
+        <button class="modal-select-btn" type="button" id="pdfExportBtn">
+          <span>PDF로 내보내기</span>
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+
+        <div class="modal-actions modal-actions--right">
+          <button class="modal-btn modal-btn--cyan modal-btn--small" id="closeExportActivityBtn" type="button">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 데이터 복원 시작 모달 -->
+    <div class="modal-overlay modal-overlay--blue" id="restoreStartModal" style="display: none;">
+      <div class="modal-card">
+        <h2 class="modal-card__title">데이터 복원 시작</h2>
+        <p class="modal-card__desc">선택하신 백업 시점(2024.05.27)으로 모든<br>메모와 설정을 복원하시겠습니까?<br><span class="text-danger">현재 작성 중인 데이터는 덮어씌워질 수 있습니다.</span></p>
+        <button class="modal-btn modal-btn--cyan" id="confirmRestoreBtn" type="button">복원 시작</button>
+        <button class="modal-btn modal-btn--text" id="cancelRestoreBtn" type="button">취소</button>
+      </div>
+    </div>
+
+    <!-- 6. 데이터 복원 완료 모달 -->
+    <div class="modal-overlay modal-overlay--blue" id="restoreCompleteModal" style="display: none;">
+      <div class="modal-card">
+        <h2 class="modal-card__title">데이터 복원 완료</h2>
+        <p class="modal-card__desc">데이터가 성공적으로 복원되었습니다.<br>이제 모든 메모를 확인하실 수 있습니다.</p>
+        <button class="modal-btn modal-btn--cyan" id="closeRestoreCompleteBtn" type="button">확인</button>
+      </div>
+    </div>
+
+    <!-- 7. 데이터 백업 시작 모달 -->
+    <div class="modal-overlay modal-overlay--blue" id="backupStartModal" style="display: none;">
+      <div class="modal-card">
+        <h2 class="modal-card__title">데이터 백업 시작</h2>
+        <p class="modal-card__desc">현재 작성된 모든 메모와 설정을 안전하게<br>클라우드에 백업하시겠습니까?</p>
+        <button class="modal-btn modal-btn--cyan" id="confirmBackupBtn" type="button">백업 시작</button>
+        <button class="modal-btn modal-btn--text" id="cancelBackupBtn" type="button">취소</button>
+      </div>
+    </div>
+
+    <!-- 8. 데이터 백업 완료 모달 -->
+    <div class="modal-overlay modal-overlay--blue" id="backupCompleteModal" style="display: none;">
+      <div class="modal-card">
+        <h2 class="modal-card__title">데이터 백업 완료</h2>
+        <p class="modal-card__desc">데이터가 성공적으로 백업되었습니다.<br>이제 모든 메모를 확인하실 수 있습니다.</p>
+        <button class="modal-btn modal-btn--cyan" id="closeBackupCompleteBtn" type="button">확인</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="data.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="profile.js"></script>
+</body>
+
+</html>
