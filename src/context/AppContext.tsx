@@ -12,6 +12,8 @@ const INITIAL_USER: User = {
   name: '인영',
   email: 'user@sortone.ai',
   avatarUrl: '/default-avatar.png', // Fallback or placeholder
+  avatarInitials: 'IY',
+  avatarBgColor: '#A3C9F1',
   membership: 'Premium',
   activeSince: '2023.10.15'
 };
@@ -59,6 +61,7 @@ interface AppContextType {
   updateMemo: (id: string, updates: Partial<Memo>) => void;
   deleteMemo: (id: string) => void;
   user: User;
+  updateUser: (updates: Partial<User>) => void;
   settings: Settings;
   toggleAiAutoClassify: () => void;
   recentSearches: string[];
@@ -136,6 +139,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setMemos(prev => prev.filter(m => m.id !== id));
   };
 
+  const updateUser = (updates: Partial<User>) => {
+    setUser(prev => ({ ...prev, ...updates }));
+  };
+
   const toggleAiAutoClassify = () => {
     setSettings(prev => ({ ...prev, aiAutoClassify: !prev.aiAutoClassify }));
   };
@@ -169,7 +176,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   return (
     <AppContext.Provider value={{
       memos, addMemo, updateMemo, deleteMemo,
-      user, settings, toggleAiAutoClassify,
+      user, updateUser, settings, toggleAiAutoClassify,
       recentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches,
       isLoggedIn, login, logout, deleteAccount
     }}>

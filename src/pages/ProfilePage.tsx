@@ -23,11 +23,11 @@ const AvatarWrap = styled.div`
   margin-bottom: 16px;
 `;
 
-const AvatarImg = styled.span`
+const AvatarImg = styled.span<{ $bgColor?: string }>`
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background-color: #A3C9F1;
+  background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
   color: ${({ theme }) => theme.colors.textMain};
   display: flex;
   align-items: center;
@@ -36,6 +36,7 @@ const AvatarImg = styled.span`
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: 3px solid ${({ theme }) => theme.colors.white};
+  transition: background-color 0.2s ease;
 `;
 
 const EditAvatarBtn = styled.button`
@@ -198,12 +199,28 @@ const ActionBtn = styled.button<{ $danger?: boolean; $bgColor?: string }>`
   }
 `;
 
-type ProfileModalStep = 'none' | 'logout' | 'deleteStart' | 'deleteDone' | 'backupMenu' | 'exportMenu' | 'backupStart' | 'backupDone' | 'restoreStart' | 'restoreDone' | 'exportPdfStart' | 'exportPdfDone';
+type ProfileModalStep = 'none' | 'logout' | 'deleteStart' | 'deleteDone' | 'backupMenu' | 'exportMenu' | 'backupStart' | 'backupDone' | 'restoreStart' | 'restoreDone' | 'exportPdfStart' | 'exportPdfDone' | 'editAvatar';
 
 export const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
-  const { user, settings, toggleAiAutoClassify, logout, deleteAccount } = useApp();
+  const { user, updateUser, settings, toggleAiAutoClassify, logout, deleteAccount } = useApp();
   const [modalStep, setModalStep] = useState<ProfileModalStep>('none');
+  const [editInitials, setEditInitials] = useState(user.avatarInitials || 'IY');
+  const [editBgColor, setEditBgColor] = useState(user.avatarBgColor || '#A3C9F1');
+
+  const handleOpenEditAvatar = () => {
+    setEditInitials(user.avatarInitials || 'IY');
+    setEditBgColor(user.avatarBgColor || '#A3C9F1');
+    setModalStep('editAvatar');
+  };
+
+  const handleSaveAvatar = () => {
+    updateUser({
+      avatarInitials: editInitials || 'IY',
+      avatarBgColor: editBgColor
+    });
+    setModalStep('none');
+  };
 
   const handleLogout = () => {
     setModalStep('logout');
@@ -232,8 +249,8 @@ export const ProfilePage: React.FC = () => {
     <ProfileContent>
       <ProfileInfo>
         <AvatarWrap>
-          <AvatarImg>IY</AvatarImg>
-          <EditAvatarBtn>
+          <AvatarImg $bgColor={user.avatarBgColor}>{user.avatarInitials || 'IY'}</AvatarImg>
+          <EditAvatarBtn onClick={handleOpenEditAvatar} aria-label="프로필 수정">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 20h9" />
               <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z" />
@@ -426,6 +443,104 @@ export const ProfilePage: React.FC = () => {
         onConfirm={() => setModalStep('none')} 
         onCancel={() => setModalStep('none')} 
       />
+      
+      {modalStep === 'editAvatar' && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          padding: '24px', 
+          background: 'rgba(0,0,0,0.3)', 
+          backdropFilter: 'blur(4px)', 
+          animation: 'fadeIn 0.2s ease'
+        }} onClick={() => setModalStep('none')}>
+          <div style={{
+            background: '#fff', borderRadius: '20px', padding: '28px 24px', width: '100%', maxWidth: '320px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center',
+            animation: 'slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)', position: 'relative'
+          }} onClick={e => e.stopPropagation()}>
+            
+            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '20px', alignSelf: 'flex-start' }}>프로필 아바타 수정</h2>
+            
+            {/* Live Preview */}
+            <div style={{
+              width: '84px', height: '84px', borderRadius: '50%', backgroundColor: editBgColor,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '30px', fontWeight: 700, color: '#191919',
+              boxShadow: '0 4px 14px rgba(0,0,0,0.15)', border: '3px solid #fff',
+              marginBottom: '20px', transition: 'background-color 0.2s ease'
+            }}>
+              {editInitials || 'IY'}
+            </div>
+
+            {/* Initials Input */}
+            <div style={{ width: '100%', marginBottom: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <label style={{ fontSize: '13px', fontWeight: 700, color: '#2B3A4A' }}>영문 이니셜 (2자)</label>
+              <input 
+                type="text" 
+                maxLength={2} 
+                value={editInitials}
+                onChange={e => {
+                  const val = e.target.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+                  setEditInitials(val);
+                }}
+                placeholder="예: IY"
+                style={{
+                  width: '100%', padding: '12px 14px', borderRadius: '10px',
+                  border: '1.5px solid #ECEAE5', fontSize: '16px', fontWeight: 700,
+                  outline: 'none', textAlign: 'center', letterSpacing: '3px',
+                  color: '#2B3A4A', background: '#FAFAFA'
+                }}
+              />
+            </div>
+
+            {/* Color Palette Selection */}
+            <div style={{ width: '100%', marginBottom: '24px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <label style={{ fontSize: '13px', fontWeight: 700, color: '#2B3A4A' }}>배경색 선택</label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', justifyItems: 'center' }}>
+                {['#A3C9F1', '#F9B29C', '#B5EAD7', '#FFDAC1', '#FF9AA2', '#C7CEEA', '#FFE599', '#9CEAEF'].map(color => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setEditBgColor(color)}
+                    style={{
+                      width: '42px', height: '42px', borderRadius: '50%', backgroundColor: color,
+                      border: editBgColor === color ? '3px solid #2B3A4A' : '2px solid #fff',
+                      boxShadow: editBgColor === color ? '0 0 0 2px #9CEAEF' : '0 2px 6px rgba(0,0,0,0.1)', cursor: 'pointer',
+                      transform: editBgColor === color ? 'scale(1.1)' : 'scale(1)',
+                      transition: 'transform 0.15s ease, border 0.15s ease'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
+              <button 
+                type="button"
+                onClick={() => setModalStep('none')}
+                style={{ flex: 1, padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 700, background: '#F1F5F9', color: '#64748B', border: 'none', cursor: 'pointer' }}
+              >
+                취소
+              </button>
+              <button 
+                type="button"
+                onClick={handleSaveAvatar}
+                disabled={editInitials.length !== 2}
+                style={{
+                  flex: 1, padding: '12px', borderRadius: '12px', fontSize: '14px', fontWeight: 700,
+                  background: editInitials.length === 2 ? '#9CEAEF' : '#CBD5E1',
+                  color: editInitials.length === 2 ? '#1D5B60' : '#94A3B8',
+                  border: 'none',
+                  cursor: editInitials.length === 2 ? 'pointer' : 'not-allowed'
+                }}
+              >
+                저장
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </ProfileContent>
   );
