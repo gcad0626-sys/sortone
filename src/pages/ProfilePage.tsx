@@ -458,7 +458,7 @@ export const ProfilePage: React.FC = () => {
             animation: 'slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)', position: 'relative'
           }} onClick={e => e.stopPropagation()}>
             
-            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '20px', alignSelf: 'flex-start' }}>프로필 아바타 수정</h2>
+            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '20px', alignSelf: 'flex-start' }}>프로필 이미지 수정</h2>
             
             {/* Live Preview */}
             <div style={{
