@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { MemoCard } from '../components/common/MemoCard';
+import { CategoryEditModal } from '../components/common/CategoryEditModal';
 import type { Category } from '../types';
 
 const MainContent = styled.div`
@@ -26,13 +27,36 @@ const CategoryFilter = styled.div`
 
 const CategoryItem = styled.button<{ $isActive: boolean }>`
   flex-shrink: 0;
-  padding: 9px 18px;
+  padding: 4px 12px;
   border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: ${({ $isActive, theme }) => ($isActive ? '#1D5B60' : theme.colors.primary)};
   background-color: ${({ $isActive }) => ($isActive ? '#9CEAEF' : '#FFFFFF')};
   transition: background-color 0.15s ease, color 0.15s ease;
+`;
+
+const AddCategoryBtn = styled.button`
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  color: ${({ theme }) => theme.colors.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s ease;
+  &:active {
+    opacity: 0.7;
+  }
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 const Section = styled.section`
@@ -88,12 +112,11 @@ const Fab = styled.button`
   }
 `;
 
-const CATEGORIES: Category[] = ['전체', '업무', '개인', '아이디어'];
-
 export const HomePage: React.FC = () => {
-  const { memos, deleteMemo, updateMemo } = useApp();
+  const { memos, deleteMemo, updateMemo, categories } = useApp();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   
   const queryCategory = (searchParams.get('category') as Category) || '전체';
   const [currentCategory, setCurrentCategory] = useState<Category>(queryCategory);
@@ -113,7 +136,7 @@ export const HomePage: React.FC = () => {
   const filteredMemos = useMemo(() => {
     let list = memos.filter(m => !m.isArchived && !m.isDeleted);
     if (currentCategory !== '전체') {
-      list = list.filter(m => m.category === currentCategory);
+      list = list.filter(m => m.category === currentCategory || (m.tags && m.tags.includes(currentCategory)));
     }
     
     return [...list].sort((a, b) => {
@@ -133,7 +156,7 @@ export const HomePage: React.FC = () => {
   return (
     <MainContent>
       <CategoryFilter>
-        {CATEGORIES.map(cat => (
+        {categories.map(cat => (
           <CategoryItem 
             key={cat} 
             $isActive={currentCategory === cat}
@@ -142,6 +165,12 @@ export const HomePage: React.FC = () => {
             {cat}
           </CategoryItem>
         ))}
+        <AddCategoryBtn onClick={() => setIsEditModalOpen(true)}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+        </AddCategoryBtn>
       </CategoryFilter>
 
       {importantMemos.length > 0 && (
@@ -194,11 +223,13 @@ export const HomePage: React.FC = () => {
       </Section>
 
       <Fab onClick={() => navigate('/add')}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
       </Fab>
+
+      <CategoryEditModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} />
     </MainContent>
   );
 };

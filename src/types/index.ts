@@ -1,4 +1,4 @@
-export type Category = '전체' | '업무' | '개인' | '아이디어';
+export type Category = string;
 
 export interface Memo {
   id: string;

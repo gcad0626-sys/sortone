@@ -9,8 +9,8 @@ import { ConfirmModal } from './ConfirmModal';
 const Card = styled.div<{ $isImportant?: boolean }>`
   background-color: ${({ $isImportant, theme }) => ($isImportant ? theme.colors.importantCardBg : theme.colors.white)};
   border-radius: ${({ theme }) => theme.radius.m};
-  padding: 20px;
-  margin-bottom: 16px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
   box-shadow: ${({ theme }) => theme.shadows.card};
   cursor: pointer;
   position: relative;
@@ -26,11 +26,12 @@ const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
+  margin-bottom: 6px;
 `;
 
 const DateText = styled.span`
-  font-size: 13px;
+  font-size: 10px;
   color: ${({ theme }) => theme.colors.textSub};
   font-weight: 500;
 `;
@@ -80,15 +81,15 @@ const Title = styled.h3`
   font-size: 17px;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.textMain};
-  margin-bottom: 8px;
-  line-height: 1.4;
+  margin-bottom: 4px;
+  line-height: 1.3;
 `;
 
 const Desc = styled.p`
-  font-size: 14px;
+  font-size: 13px;
   color: ${({ theme }) => theme.colors.textSub};
   line-height: 1.5;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -104,9 +105,9 @@ const TagsRow = styled.div`
 
 const Tag = styled.span<{ $tagType: string }>`
   display: inline-block;
-  padding: 4px 10px;
+  padding: 2px 8px;
   border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   
   ${({ $tagType }) => {
@@ -158,7 +159,20 @@ export const MemoCard: React.FC<MemoCardProps> = ({ memo, mode = 'default', onDe
 
   const formatDate = (isoString: string) => {
     const date = new Date(isoString);
-    return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+    const now = new Date();
+    
+    const dateMid = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const nowMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffDays = Math.round((nowMid.getTime() - dateMid.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return '오늘';
+    if (diffDays === 1) return '어제';
+    if (diffDays > 1 && diffDays < 7) return `${diffDays}일 전`;
+
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}.${m}.${d}`;
   };
 
   return (

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { ConfirmModal } from '../common/ConfirmModal';
+import { CategoryEditModal } from '../common/CategoryEditModal';
+import { useApp } from '../../context/AppContext';
 
 const Overlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;
@@ -138,7 +140,9 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
+  const { user, logout, categories } = useApp();
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const handleNavigate = (path: string) => {
     onClose();
@@ -163,28 +167,30 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <Overlay $isOpen={isOpen} onClick={onClose}>
       <Drawer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
         <ProfileArea onClick={() => handleNavigate('/profile')} style={{ cursor: 'pointer' }}>
-          <Avatar>IY</Avatar>
+          <Avatar>{user.avatarInitials || 'IY'}</Avatar>
           <InfoBox>
             <NameRow>
-              <Name>IY</Name>
-              <Badge>Premium</Badge>
+              <Name>{user.name}</Name>
+              <Badge>{user.membership}</Badge>
             </NameRow>
-            <Email>user@sortone.ai</Email>
+            <Email>{user.email}</Email>
           </InfoBox>
         </ProfileArea>
 
         <MenuNav>
-          <MenuItem onClick={() => handleNavigate('/memo')}>
-            전체 메모
-          </MenuItem>
-          <MenuItem onClick={() => handleNavigate('/memo?category=업무')}>
-            업무
-          </MenuItem>
-          <MenuItem onClick={() => handleNavigate('/memo?category=개인')}>
-            개인
-          </MenuItem>
-          <MenuItem onClick={() => handleNavigate('/memo?category=아이디어')}>
-            아이디어
+          {categories.map(cat => (
+            <MenuItem 
+              key={cat} 
+              onClick={() => handleNavigate(cat === '전체' ? '/memo' : `/memo?category=${cat}`)}
+            >
+              {cat === '전체' ? '전체 메모' : cat}
+            </MenuItem>
+          ))}
+          <MenuItem onClick={() => setIsEditModalOpen(true)} style={{ color: '#A9B3BD' }}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: 16, height: 16 }}>
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
           </MenuItem>
         </MenuNav>
 
@@ -216,6 +222,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         cancelLabel="취소"
         onConfirm={handleLogoutConfirm}
         onCancel={handleLogoutCancel}
+      />
+      <CategoryEditModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
       />
     </Overlay>
   );

@@ -193,7 +193,30 @@ const MemoContent = styled.div`
   font-size: 14px;
   color: ${({ theme }) => theme.colors.textSub};
   line-height: 1.6;
-  white-space: pre-wrap;
+  ul {
+    list-style-type: disc !important;
+    margin: 8px 0 8px 24px !important;
+    padding-left: 0 !important;
+  }
+  ul li {
+    list-style-type: disc !important;
+    display: list-item !important;
+    margin-bottom: 4px;
+  }
+  ol {
+    list-style-type: decimal !important;
+    margin: 8px 0 8px 24px !important;
+    padding-left: 0 !important;
+  }
+  ol li {
+    list-style-type: decimal !important;
+    display: list-item !important;
+    margin-bottom: 4px;
+  }
+  u { text-decoration: underline !important; }
+  s, strike { text-decoration: line-through !important; }
+  em, i { font-style: italic !important; }
+  b, strong { font-weight: bold !important; }
 `;
 
 const TagsRow = styled.div`
@@ -371,36 +394,46 @@ export const DetailPage: React.FC = () => {
       </DetailHeader>
 
       <DetailContent>
-        <SummaryCard>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <SummaryLabel style={{ marginBottom: 0 }}>
-              AI 3줄 요약
-            </SummaryLabel>
-            <CategoryBadge $tagText={memo.tags && memo.tags.length > 0 ? memo.tags[0] : memo.category}>{memo.tags && memo.tags.length > 0 ? memo.tags[0] : memo.category}</CategoryBadge>
-          </div>
-          <SummaryMeta style={{ marginTop: 0 }}>
-            <SummaryTitle>{memo.title}</SummaryTitle>
-          </SummaryMeta>
-          <SummaryList>
-            {memo.aiSummary && memo.aiSummary.length > 0 ? (
-              memo.aiSummary.map((summary: string, idx: number) => (
-                <SummaryItem key={idx}>{summary}</SummaryItem>
-              ))
-            ) : (
-              <SummaryItem>요약 내용이 없습니다.</SummaryItem>
-            )}
-          </SummaryList>
-        </SummaryCard>
+        {(() => {
+          const displayTags = (memo.tags && memo.tags.length > 0)
+            ? memo.tags
+            : (memo.category && memo.category !== '전체' ? [memo.category] : ['일반']);
+            
+          return (
+            <>
+              {memo.aiSummary && memo.aiSummary.length > 0 && (
+                <SummaryCard>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <SummaryLabel style={{ marginBottom: 0 }}>
+                      AI 3줄 요약
+                    </SummaryLabel>
+                    {displayTags.map(tag => (
+                      <CategoryBadge key={tag} $tagText={tag}>{tag}</CategoryBadge>
+                    ))}
+                  </div>
+                  <SummaryMeta style={{ marginTop: 0 }}>
+                    <SummaryTitle>{memo.title}</SummaryTitle>
+                  </SummaryMeta>
+                  <SummaryList>
+                    {memo.aiSummary.map((summary: string, idx: number) => (
+                      <SummaryItem key={idx}>{summary}</SummaryItem>
+                    ))}
+                  </SummaryList>
+                </SummaryCard>
+              )}
 
-        <BodyCard onClick={handleEdit} style={{ cursor: 'pointer' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-            <MemoTitle style={{ marginBottom: 0 }}>{memo.title}</MemoTitle>
-            {memo.category && (
-              <CategoryBadge $tagText={memo.category}>{memo.category}</CategoryBadge>
-            )}
-          </div>
-          <MemoContent dangerouslySetInnerHTML={{ __html: memo.content }} />
-        </BodyCard>
+              <BodyCard onClick={handleEdit} style={{ cursor: 'pointer' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
+                  <MemoTitle style={{ marginBottom: 0 }}>{memo.title}</MemoTitle>
+                  {displayTags.map(tag => (
+                    <CategoryBadge key={tag} $tagText={tag}>{tag}</CategoryBadge>
+                  ))}
+                </div>
+                <MemoContent dangerouslySetInnerHTML={{ __html: memo.content }} />
+              </BodyCard>
+            </>
+          );
+        })()}
       </DetailContent>
 
       {/* 메모 공유 모달 */}

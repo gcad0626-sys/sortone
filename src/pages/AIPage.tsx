@@ -260,14 +260,20 @@ interface ActionItem {
   category?: string;
 }
 
-const getActionTitle = (memo: any) => {
+const getActionTitle = (memo: any): string | null => {
   const t = memo.title || '메모';
   const c = memo.content || '';
+  const tags = memo.tags || [];
   if (t.includes('운동') || c.includes('운동')) return '운동 일정 캘린더에 추가하기';
-  if (t.includes('회의') || memo.tags.includes('업무')) return `${t} 주요 내용 팀에 공유하기`;
-  if (t.includes('공부') || memo.tags.includes('개인')) return `${t} 관련 자료 리서치하기`;
-  if (memo.tags.includes('건강') || t.includes('병원')) return '건강 관련 일정 예약하기';
-  return `${t} 관련 후속 작업 진행하기`;
+  if (t.includes('회의') || tags.includes('업무') || tags.includes('프로젝트')) return `${t} 주요 내용 팀에 공유하기`;
+  if (t.includes('공부') || tags.includes('공부')) return `${t} 관련 자료 리서치하기`;
+  if (tags.includes('건강') || t.includes('병원')) return '건강 관련 일정 예약하기';
+  if (t.includes('할일') || c.includes('할일') || t.includes('일정') || c.includes('일정') || t.includes('약속') || c.includes('약속')) return `${t} 일정 캘린더에 추가하기`;
+  if (t.includes('아이디어') || tags.includes('아이디어')) return `${t} 구체화하기`;
+  if (t.includes('쇼핑') || t.includes('구매') || tags.includes('쇼핑')) return `${t} 구매 리스트 확인하기`;
+  if (tags.includes('여행')) return `${t} 여행 계획 세우기`;
+  
+  return null;
 };
 
 export const AIPage: React.FC = () => {
@@ -284,7 +290,7 @@ export const AIPage: React.FC = () => {
 
   const analysisItems = React.useMemo(() => {
     return memos
-      .filter(m => !hiddenAnalysis.has(m.id))
+      .filter(m => !hiddenAnalysis.has(m.id) && m.aiSummary && m.aiSummary.length > 0)
       .map(m => ({
         id: m.id,
         title: m.title || '제목 없음',
@@ -295,14 +301,21 @@ export const AIPage: React.FC = () => {
 
   const actionItems = React.useMemo(() => {
     return memos
-      .filter(m => !hiddenActions.has(m.id) && m.tags.length > 0)
-      .map(m => ({
-        id: m.id,
-        title: getActionTitle(m),
-        desc: m.tags.includes('업무') || m.tags.includes('비즈니스 성장') ? '요약된 내용을 팀에 공유해보세요.' : '관련 일정을 캘린더에 추가해보세요.',
-        checked: checkedActions.has(m.id),
-        category: (m.tags && m.tags.length > 0) ? m.tags[0] : (m.category || '기타')
-      })) as ActionItem[];
+      .filter(m => !hiddenActions.has(m.id) && !m.isDeleted && !m.isArchived)
+      .map(m => {
+        const actionTitle = getActionTitle(m);
+        if (!actionTitle) return null;
+        
+        const tags = m.tags || [];
+        return {
+          id: m.id,
+          title: actionTitle,
+          desc: tags.includes('업무') || tags.includes('비즈니스 성장') ? '요약된 내용을 팀에 공유해보세요.' : '관련 일정을 캘린더에 추가해보세요.',
+          checked: checkedActions.has(m.id),
+          category: (m.tags && m.tags.length > 0) ? m.tags[0] : (m.category || '기타')
+        };
+      })
+      .filter(Boolean) as ActionItem[];
   }, [memos, hiddenActions, checkedActions]);
 
   const handleToggleAction = (id: string, e: React.MouseEvent) => {

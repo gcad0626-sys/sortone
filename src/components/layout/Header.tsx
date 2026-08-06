@@ -9,6 +9,7 @@ const HeaderContainer = styled.header`
   height: ${({ theme }) => theme.layout.headerHeight};
   padding: 0 16px;
   background-color: ${({ theme }) => theme.colors.primary};
+  border-bottom: 1px dashed #9CEAEF;
   position: absolute;
   top: 0;
   left: 0;
@@ -67,7 +68,9 @@ const Avatar = styled.span`
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  border: 2px solid ${({ theme }) => theme.colors.white};
+  border: none;
+  line-height: 1;
+  padding-top: 1px;
 `;
 
 interface HeaderProps {

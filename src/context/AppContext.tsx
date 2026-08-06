@@ -7,6 +7,9 @@ const SEARCH_STORAGE_KEY = 'sortone_recent_searches';
 const USER_STORAGE_KEY = 'sortone_user';
 const SETTINGS_STORAGE_KEY = 'sortone_settings';
 const LOGIN_STORAGE_KEY = 'sortone_logged_in';
+const CATEGORIES_STORAGE_KEY = 'sortone_categories';
+
+const INITIAL_CATEGORIES = ['전체', '업무', '개인', '아이디어', '우선순위'];
 
 const INITIAL_USER: User = {
   name: '인영',
@@ -72,6 +75,9 @@ interface AppContextType {
   login: () => void;
   logout: () => void;
   deleteAccount: () => void;
+  categories: string[];
+  addCategory: (cat: string) => void;
+  removeCategory: (cat: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -101,6 +107,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return localStorage.getItem(LOGIN_STORAGE_KEY) === 'true';
   });
 
+  const [categories, setCategories] = useState<string[]>(() => {
+    const raw = localStorage.getItem(CATEGORIES_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : INITIAL_CATEGORIES;
+  });
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(memos));
   }, [memos]);
@@ -120,6 +131,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     localStorage.setItem(LOGIN_STORAGE_KEY, String(isLoggedIn));
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
+  }, [categories]);
 
   const addMemo = (memoData: Omit<Memo, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newMemo: Memo = {
@@ -162,6 +177,18 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setRecentSearches([]);
   };
 
+  const addCategory = (cat: string) => {
+    if (!categories.includes(cat)) {
+      setCategories(prev => [...prev, cat]);
+    }
+  };
+
+  const removeCategory = (cat: string) => {
+    if (cat !== '전체') {
+      setCategories(prev => prev.filter(c => c !== cat));
+    }
+  };
+
   const login = () => setIsLoggedIn(true);
   const logout = () => setIsLoggedIn(false);
   const deleteAccount = () => {
@@ -178,7 +205,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       memos, addMemo, updateMemo, deleteMemo,
       user, updateUser, settings, toggleAiAutoClassify,
       recentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches,
-      isLoggedIn, login, logout, deleteAccount
+      isLoggedIn, login, logout, deleteAccount,
+      categories, addCategory, removeCategory
     }}>
       {children}
     </AppContext.Provider>

@@ -38,8 +38,9 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
 
-  ul, li {
-    list-style: none;
+  ul, ol {
+    margin: 0;
+    padding: 0;
   }
 
   /* App Container */

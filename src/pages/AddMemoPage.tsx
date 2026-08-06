@@ -58,13 +58,30 @@ const ContentInput = styled.div`
   font-size: 14px; line-height: 1.7; color: ${({ theme }) => theme.colors.textMain};
   outline: none; overflow-y: auto;
   &:empty:before { content: attr(data-placeholder); color: #A9B3BD; pointer-events: none; display: block; }
-  ul { list-style: disc; margin: 8px 0 8px 24px; padding-left: 0; }
-  ol { list-style: decimal; margin: 8px 0 8px 24px; padding-left: 0; }
-  li { margin-bottom: 4px; display: list-item; }
-  u { text-decoration: underline; }
-  s, strike { text-decoration: line-through; }
-  em, i { font-style: italic; }
-  b, strong { font-weight: bold; }
+  ul {
+    list-style-type: disc !important;
+    margin: 8px 0 8px 24px !important;
+    padding-left: 0 !important;
+  }
+  ul li {
+    list-style-type: disc !important;
+    display: list-item !important;
+    margin-bottom: 4px;
+  }
+  ol {
+    list-style-type: decimal !important;
+    margin: 8px 0 8px 24px !important;
+    padding-left: 0 !important;
+  }
+  ol li {
+    list-style-type: decimal !important;
+    display: list-item !important;
+    margin-bottom: 4px;
+  }
+  u { text-decoration: underline !important; }
+  s, strike { text-decoration: line-through !important; }
+  em, i { font-style: italic !important; }
+  b, strong { font-weight: bold !important; }
 `;
 const SaveBtn = styled.button`
   position: absolute; bottom: 18px; right: 18px; width: 44px; height: 44px;
@@ -361,7 +378,7 @@ export const AddMemoPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('edit');
-  const { addMemo, updateMemo, memos } = useApp();
+  const { addMemo, updateMemo, memos, settings } = useApp();
 
   const editMemo = editId ? memos.find(m => m.id === editId) : null;
 
@@ -374,7 +391,23 @@ export const AddMemoPage: React.FC = () => {
   const [selectedFontSize, setSelectedFontSize] = useState('3');
   const [linkUrl, setLinkUrl] = useState('https://');
   const [selectedTags, setSelectedTags] = useState<string[]>(editMemo?.tags ?? []);
-  const [useAi, setUseAi] = useState(true);
+  const [useAi, setUseAi] = useState(editMemo ? (editMemo.aiSummary && editMemo.aiSummary.length > 0) : settings.aiAutoClassify);
+  const [manualTagInput, setManualTagInput] = useState('');
+  const [customTags, setCustomTags] = useState<string[]>(
+    (editMemo?.tags ?? []).filter(t => !DEFAULT_TAGS.includes(t))
+  );
+  
+  const handleManualTagAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && manualTagInput.trim()) {
+      e.preventDefault();
+      const newTag = manualTagInput.trim();
+      if (!DEFAULT_TAGS.includes(newTag) && !customTags.includes(newTag)) {
+        setCustomTags([...customTags, newTag]);
+      }
+      setManualTagInput('');
+    }
+  };
+
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [attachedSource, setAttachedSource] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -502,30 +535,33 @@ export const AddMemoPage: React.FC = () => {
     }
     
     // AI 추천 태그 및 3줄 요약 생성
-    let finalTags = selectedTags.length > 0 ? selectedTags : [];
-    if (useAi && finalTags.length === 0) {
+    let finalTags = selectedTags.length > 0 ? [...selectedTags] : [];
+    if (useAi) {
       const textToAnalyze = (title + ' ' + plainText).toLowerCase();
+      let aiTags: string[] = [];
       if (/(건강|운동|다이어트|병원|약|결명자|차|음료|영양제)/.test(textToAnalyze)) {
-        finalTags.push('건강', '일상');
+        aiTags.push('건강', '일상');
       } else if (/(식당|맛집|음식|식단|레시피|요리|식재료|메뉴)/.test(textToAnalyze)) {
-        finalTags.push('음식', '일상');
+        aiTags.push('음식', '일상');
       } else if (/(회의|미팅|보고|기획|디자인|개발|마케팅|재무|인사|업무|프로젝트|일정|출장)/.test(textToAnalyze)) {
-        finalTags.push('업무', '핵심성과');
+        aiTags.push('업무', '핵심성과');
       } else if (/(아이디어|영감|창의|생각|브레인스토밍)/.test(textToAnalyze)) {
-        finalTags.push('아이디어', '프로젝트');
+        aiTags.push('아이디어', '프로젝트');
       } else if (/(돈|금융|투자|주식|코인|부동산|저축|예금|가계부|쇼핑)/.test(textToAnalyze)) {
-        finalTags.push('금융', '일상');
+        aiTags.push('금융', '일상');
       } else if (/(공부|학습|독서|책|시험|강의|자격증)/.test(textToAnalyze)) {
-        finalTags.push('공부', '개인');
+        aiTags.push('공부', '개인');
       } else if (/(여행|캠핑|휴가|비행기|호텔|관광)/.test(textToAnalyze)) {
-        finalTags.push('여행', '일상');
+        aiTags.push('여행', '일상');
       } else if (/(가족|친구|지인|모임|약속|데이트)/.test(textToAnalyze)) {
-        finalTags.push('관계', '일상');
+        aiTags.push('관계', '일상');
       } else if (/(영화|음악|드라마|전시|공연|취미|게임)/.test(textToAnalyze)) {
-        finalTags.push('취미', '일상');
+        aiTags.push('취미', '일상');
       } else {
-        finalTags.push('메모', '일상');
+        if (finalTags.length === 0) aiTags.push('메모', '일상');
       }
+      
+      finalTags = Array.from(new Set([...finalTags, ...aiTags]));
     }
     
     let generatedSummary: string[] = [];
@@ -542,11 +578,18 @@ export const AddMemoPage: React.FC = () => {
       }
     }
 
+    // Determine dynamic primary category based on tags
+    let assignedCategory: Category = '개인';
+    if (finalTags.length > 0) {
+      const stdCat = finalTags.find(t => ['업무', '개인', '아이디어'].includes(t)) as Category | undefined;
+      assignedCategory = stdCat || (finalTags[0] as Category);
+    }
+
     if (editId && editMemo) {
-      updateMemo(editId, { title: title.trim() || '제목 없음', content, tags: finalTags, aiSummary: generatedSummary });
+      updateMemo(editId, { title: title.trim() || '제목 없음', content, tags: finalTags, category: assignedCategory, aiSummary: generatedSummary });
       navigate(`/detail/${editId}`);
     } else {
-      addMemo({ title: title.trim() || '제목 없음', content, tags: finalTags, category: '전체', isImportant: false, aiSummary: generatedSummary });
+      addMemo({ title: title.trim() || '제목 없음', content, tags: finalTags, category: assignedCategory, isImportant: false, aiSummary: generatedSummary });
       navigate('/memo');
     }
   };
@@ -841,7 +884,7 @@ export const AddMemoPage: React.FC = () => {
             <CustomToggle $checked={useAi} onClick={() => setUseAi(!useAi)} style={{ cursor: 'pointer' }} />
           </div>
           {useAi && (
-            <AiTagList style={{ marginTop: '8px' }}>
+            <AiTagList style={{ marginTop: '8px', flexWrap: 'wrap' }}>
               {DEFAULT_TAGS.map((tag, i) => (
                 <AiTag key={tag} $tagText={tag} $selected={selectedTags.includes(tag)}
                   onClick={() => toggleTag(tag)}>
@@ -850,6 +893,25 @@ export const AddMemoPage: React.FC = () => {
               ))}
             </AiTagList>
           )}
+          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            {customTags.map(tag => (
+              <AiTag key={tag} $tagText={tag} $selected={selectedTags.includes(tag)} onClick={() => toggleTag(tag)}>
+                {tag} <span style={{ cursor: 'pointer', marginLeft: '6px', fontSize: '14px', fontWeight: 'bold' }} onClick={(e) => {
+                  e.stopPropagation();
+                  setCustomTags(customTags.filter(t => t !== tag));
+                  setSelectedTags(selectedTags.filter(t => t !== tag));
+                }}>&times;</span>
+              </AiTag>
+            ))}
+            <input 
+              type="text" 
+              placeholder="# 태그 직접 입력 (Enter)" 
+              value={manualTagInput}
+              onChange={(e) => setManualTagInput(e.target.value)}
+              onKeyDown={handleManualTagAdd}
+              style={{ padding: '6px 12px', fontSize: '12px', borderRadius: '16px', border: '1px solid #ECEAE5', outline: 'none', background: '#F8FAF9', flex: 1, minWidth: '140px', maxWidth: '200px', color: '#2B3A4A' }}
+            />
+          </div>
         </AiTagSection>
       </AddContent>
 
@@ -896,38 +958,54 @@ export const AddMemoPage: React.FC = () => {
       {imageModalOpen && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center',
-          padding: '24px', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(4px)'
+          padding: '24px', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(4px)', animation: 'fadeIn 0.2s ease'
         }} onClick={() => setImageModalOpen(false)}>
           <div style={{
-            background: '#fff', borderRadius: '22px', padding: '36px 28px 28px', width: '100%', maxWidth: '300px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center'
+            background: '#fff', borderRadius: '16px', padding: '32px 24px', width: '100%', maxWidth: '320px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+            animation: 'slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }} onClick={e => e.stopPropagation()}>
-            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '24px' }}>사진 첨부</h2>
+            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '20px' }}>사진 첨부</h2>
             
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '24px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <button onClick={() => { handleImageAttach('갤러리'); setImageModalOpen(false); }}
-                  style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #C8F5D0 0%, #A8EBB8 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(80, 200, 120, 0.25)', marginBottom: '8px' }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#35B37E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '26px', height: '26px' }}>
-                    <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
-                  </svg>
-                </button>
-                <span style={{ fontSize: '12px', color: '#6B7C8D' }}>갤러리</span>
-              </div>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+              <button 
+                onClick={() => { handleImageAttach('갤러리'); setImageModalOpen(false); }}
+                style={{
+                  width: '100%', padding: '14px', borderRadius: '10px', background: '#F8FAF9',
+                  border: '1px solid #ECEAE5', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: '10px', fontSize: '15px', fontWeight: 700, color: '#2B3A4A', cursor: 'pointer',
+                  transition: 'background-color 0.15s ease'
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1D5B60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px' }}>
+                  <rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" />
+                </svg>
+                <span>갤러리에서 선택</span>
+              </button>
               
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <button onClick={() => { handleImageAttach('카메라'); setImageModalOpen(false); }}
-                  style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'linear-gradient(135deg, #FFD1A9 0%, #FFB680 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 14px rgba(255, 182, 128, 0.25)', marginBottom: '8px' }}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#E67E22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '26px', height: '26px' }}>
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" />
-                  </svg>
-                </button>
-                <span style={{ fontSize: '12px', color: '#6B7C8D' }}>카메라</span>
-              </div>
+              <button 
+                onClick={() => { handleImageAttach('카메라'); setImageModalOpen(false); }}
+                style={{
+                  width: '100%', padding: '14px', borderRadius: '10px', background: '#F8FAF9',
+                  border: '1px solid #ECEAE5', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: '10px', fontSize: '15px', fontWeight: 700, color: '#2B3A4A', cursor: 'pointer',
+                  transition: 'background-color 0.15s ease'
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1D5B60" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: '20px', height: '20px' }}>
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" />
+                </svg>
+                <span>카메라로 촬영</span>
+              </button>
             </div>
 
-            <button onClick={() => setImageModalOpen(false)}
-              style={{ width: '100%', padding: '15px', borderRadius: '12px', fontSize: '15px', fontWeight: 700, background: 'linear-gradient(135deg, #63D4D9 0%, #4BBFC5 100%)', color: '#fff', boxShadow: '0 6px 18px rgba(75, 191, 197, 0.35)' }}>
+            <button 
+              onClick={() => setImageModalOpen(false)}
+              style={{
+                width: '100%', padding: '12px', fontSize: '14px', fontWeight: 600, color: '#A9B3BD',
+                border: 'none', background: 'none', cursor: 'pointer'
+              }}
+            >
               취소
             </button>
           </div>
@@ -941,16 +1019,21 @@ export const AddMemoPage: React.FC = () => {
           padding: '24px', background: 'rgba(0,0,0,0.25)', backdropFilter: 'blur(4px)', animation: 'fadeIn 0.2s ease'
         }} onClick={() => setAttachedSource(null)}>
           <div style={{
-            background: '#fff', borderRadius: '22px', padding: '36px 28px 28px', width: '100%', maxWidth: '300px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+            background: '#fff', borderRadius: '16px', padding: '32px 24px', width: '100%', maxWidth: '320px',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
             animation: 'slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }} onClick={e => e.stopPropagation()}>
-            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '24px' }}>사진 첨부 완료</h2>
-            <span style={{ fontSize: '12px', color: '#6B7C8D', marginBottom: '24px', lineHeight: '1.5' }}>
+            <h2 style={{ fontSize: '18px', fontWeight: 800, color: '#2B3A4A', marginBottom: '12px' }}>사진 첨부 완료</h2>
+            <p style={{ fontSize: '13px', color: '#6B7C8D', marginBottom: '28px', lineHeight: '1.5' }}>
               {attachedSource}에서 사진을<br/>성공적으로 첨부했습니다.
-            </span>
-            <button onClick={() => setAttachedSource(null)}
-              style={{ width: '100%', padding: '15px', borderRadius: '12px', fontSize: '15px', fontWeight: 700, background: 'linear-gradient(135deg, #63D4D9 0%, #4BBFC5 100%)', color: '#fff', boxShadow: '0 6px 18px rgba(75, 191, 197, 0.35)', transition: 'all 0.18s ease' }}>
+            </p>
+            <button 
+              onClick={() => setAttachedSource(null)}
+              style={{
+                width: '100%', padding: '14px', borderRadius: '8px', fontSize: '15px', fontWeight: 700,
+                background: '#9CEAEF', color: '#1D5B60', border: 'none', cursor: 'pointer'
+              }}
+            >
               확인
             </button>
           </div>
