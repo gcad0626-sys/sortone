@@ -227,10 +227,10 @@ const TagsRow = styled.div`
 
 const Tag = styled.span<{ $tagType: string }>`
   display: inline-block;
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 400;
   
   ${({ $tagType }) => {
     const color = getTagColor($tagType);

@@ -6,7 +6,7 @@ import { useApp } from '../../context/AppContext';
 import { getTagColor } from '../../utils/colors';
 import { ConfirmModal } from './ConfirmModal';
 
-const Card = styled.div<{ $isImportant?: boolean }>`
+const Card = styled.div<{ $isImportant?: boolean; $showDropdown?: boolean }>`
   background-color: ${({ $isImportant, theme }) => ($isImportant ? theme.colors.importantCardBg : theme.colors.white)};
   border-radius: ${({ theme }) => theme.radius.m};
   padding: 12px 14px;
@@ -15,10 +15,12 @@ const Card = styled.div<{ $isImportant?: boolean }>`
   cursor: pointer;
   position: relative;
   transition: transform 0.2s, box-shadow 0.2s;
+  z-index: ${({ $showDropdown }) => ($showDropdown ? 100 : 1)};
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(30, 60, 100, 0.15);
+    z-index: ${({ $showDropdown }) => ($showDropdown ? 100 : 2)};
   }
 `;
 
@@ -108,7 +110,7 @@ const Tag = styled.span<{ $tagType: string }>`
   padding: 2px 8px;
   border-radius: ${({ theme }) => theme.radius.pill};
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 400;
   
   ${({ $tagType }) => {
     const color = getTagColor($tagType);
@@ -176,7 +178,7 @@ export const MemoCard: React.FC<MemoCardProps> = ({ memo, mode = 'default', onDe
   };
 
   return (
-    <Card $isImportant={memo.isImportant} onClick={handleCardClick}>
+    <Card $isImportant={memo.isImportant} $showDropdown={showDropdown} onClick={handleCardClick}>
       <HeaderRow>
         <DateText>{formatDate(memo.createdAt)}</DateText>
         <MoreWrap ref={dropdownRef}>

@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { MemoCard } from '../components/common/MemoCard';
 import { CategoryEditModal } from '../components/common/CategoryEditModal';
+import { getTagColor } from '../utils/colors';
 import type { Category } from '../types';
 
 const MainContent = styled.div`
@@ -25,18 +26,24 @@ const CategoryFilter = styled.div`
   scrollbar-width: none;
 `;
 
-const CategoryItem = styled.button<{ $isActive: boolean }>`
+const CategoryItem = styled.button<{ $isActive: boolean; $cat: string }>`
   flex-shrink: 0;
   padding: 4px 12px;
   border-radius: ${({ theme }) => theme.radius.pill};
   font-size: 10px;
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ $isActive, theme }) => ($isActive ? '#1D5B60' : theme.colors.primary)};
-  background-color: ${({ $isActive }) => ($isActive ? '#9CEAEF' : '#FFFFFF')};
-  transition: background-color 0.15s ease, color 0.15s ease;
+  
+  ${({ $isActive, $cat }) => {
+    if (!$isActive) {
+      return `background-color: #F8F9FA; color: #6B7C8D; border: 1px solid transparent;`;
+    }
+    const color = getTagColor($cat);
+    return `background-color: ${color.bg}; color: ${color.text}; border: 1px solid transparent;`;
+  }}
+  transition: all 0.15s ease;
 `;
 
 const AddCategoryBtn = styled.button`
@@ -160,6 +167,7 @@ export const HomePage: React.FC = () => {
           <CategoryItem 
             key={cat} 
             $isActive={currentCategory === cat}
+            $cat={cat}
             onClick={() => handleCategoryChange(cat)}
           >
             {cat}
