@@ -30,7 +30,7 @@ const CategoryItem = styled.button<{ $isActive: boolean; $cat: string }>`
   flex-shrink: 0;
   padding: 4px 12px;
   border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   display: flex;
   align-items: center;

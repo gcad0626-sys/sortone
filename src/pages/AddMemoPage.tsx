@@ -31,11 +31,10 @@ const Logo = styled.span`
   font-family: ${({ theme }) => theme.fonts.logo}; font-size: 24px;
   color: ${({ theme }) => theme.colors.textOnPrimary}; line-height: 1; margin-top: 2px;
 `;
-const Avatar = styled.span`
-  width: 32px; height: 32px; border-radius: 50%; background-color: #A3C9F1;
+const Avatar = styled.span<{ $bgColor?: string }>`
+  width: 32px; height: 32px; border-radius: 50%; background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
   color: ${({ theme }) => theme.colors.textMain}; display: flex; align-items: center;
   justify-content: center; font-size: 13px; font-weight: 700; cursor: pointer;
-  border: 2px solid ${({ theme }) => theme.colors.white};
 `;
 
 /* ─── Main Content ───────────────────────────────────────────────── */
@@ -97,8 +96,16 @@ const AiTagSection = styled.div`margin-top: 4px; display: flex; flex-direction: 
 const AiTagLabel = styled.span`font-size: 13px; font-weight: 700; color: ${({ theme }) => theme.colors.textOnPrimary};`;
 const AiTagList = styled.div`display: flex; flex-wrap: wrap; gap: 8px;`;
 const AiTag = styled.button<{ $tagText: string; $selected?: boolean }>`
-  padding: 7px 16px; border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 13px; font-weight: 600; border: 2px solid transparent; opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: ${({ theme }) => theme.radius.pill};
+  font-size: 12px; 
+  font-weight: 400; 
+  line-height: 1;
+  border: 2px solid transparent; 
+  opacity: 0.9;
   transition: opacity 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
   &:active { transform: scale(0.96); }
   ${({ $tagText, $selected }) => {
@@ -378,7 +385,7 @@ export const AddMemoPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const editId = searchParams.get('edit');
-  const { addMemo, updateMemo, memos, settings } = useApp();
+  const { addMemo, updateMemo, memos, settings, user } = useApp();
 
   const editMemo = editId ? memos.find(m => m.id === editId) : null;
 
@@ -566,7 +573,12 @@ export const AddMemoPage: React.FC = () => {
     
     let generatedSummary: string[] = [];
     if (useAi) {
-      const sentences = plainText.replace(/\n+/g, ' ').split(/(?<=[.?!])\s+/).filter(s => s.trim().length > 0);
+      const lines = plainText.split(/\n+/).map(l => l.trim()).filter(l => l.length > 0);
+      let sentences: string[] = [];
+      for (const line of lines) {
+        const parts = line.split(/(?<=[^0-9][.?!])\s+/).filter(s => s.trim().length > 0);
+        sentences = sentences.concat(parts);
+      }
       if (sentences.length > 0) {
         generatedSummary = sentences.slice(0, 3).map(s => s.trim() + (s.match(/[.?!]$/) ? '' : '.'));
       } else {
@@ -862,7 +874,7 @@ export const AddMemoPage: React.FC = () => {
               <circle cx="11" cy="11" r="7" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </IconButton>
-          <Avatar onClick={() => navigate('/profile')}>IY</Avatar>
+          <Avatar $bgColor={user.avatarBgColor} onClick={() => navigate('/profile')}>{user.avatarInitials || 'IY'}</Avatar>
         </RightArea>
       </HeaderContainer>
 

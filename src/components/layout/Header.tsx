@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useApp } from '../../context/AppContext';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -56,11 +57,11 @@ const Logo = styled.span`
   margin-top: 2px;
 `;
 
-const Avatar = styled.span`
+const Avatar = styled.span<{ $bgColor?: string }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #A3C9F1;
+  background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
   color: ${({ theme }) => theme.colors.textMain};
   display: flex;
   align-items: center;
@@ -80,6 +81,7 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useApp();
   const isDetail = location.pathname.startsWith('/detail');
 
   return (
@@ -111,7 +113,7 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </IconButton>
-          <Avatar onClick={() => navigate('/profile')}>IY</Avatar>
+          <Avatar $bgColor={user.avatarBgColor} onClick={() => navigate('/profile')}>{user.avatarInitials || 'IY'}</Avatar>
         </RightArea>
       )}
     </HeaderContainer>

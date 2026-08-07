@@ -43,18 +43,17 @@ const ProfileArea = styled.div`
   border-bottom: 1px solid #ECEAE5;
 `;
 
-const Avatar = styled.span`
+const Avatar = styled.span<{ $bgColor?: string }>`
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #A3C9F1;
+  background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
   color: ${({ theme }) => theme.colors.textMain};
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
   font-weight: 700;
-  border: 2px solid ${({ theme }) => theme.colors.white};
 `;
 
 const InfoBox = styled.div`
@@ -167,7 +166,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <Overlay $isOpen={isOpen} onClick={onClose}>
       <Drawer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
         <ProfileArea onClick={() => handleNavigate('/profile')} style={{ cursor: 'pointer' }}>
-          <Avatar>{user.avatarInitials || 'IY'}</Avatar>
+          <Avatar $bgColor={user.avatarBgColor}>{user.avatarInitials || 'IY'}</Avatar>
           <InfoBox>
             <NameRow>
               <Name>{user.name}</Name>

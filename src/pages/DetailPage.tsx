@@ -137,10 +137,11 @@ const SummaryMeta = styled.div`
 `;
 
 const CategoryBadge = styled.span<{ $tagText: string }>`
-  padding: 4px 10px;
+  display: inline-block;
+  padding: 2px 8px;
   border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 400;
   ${({ $tagText }) => {
     const c = getTagColor($tagText);
     return `background-color: ${c.bg}; color: ${c.text};`;
@@ -291,11 +292,11 @@ const Logo = styled.span`
   margin-top: 2px;
 `;
 
-const Avatar = styled.span`
+const Avatar = styled.span<{ $bgColor?: string }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #A3C9F1;
+  background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
   color: ${({ theme }) => theme.colors.textMain};
   display: flex;
   align-items: center;
@@ -303,13 +304,12 @@ const Avatar = styled.span`
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  border: 2px solid ${({ theme }) => theme.colors.white};
 `;
 
 export const DetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { memos, updateMemo } = useApp();
+  const { memos, updateMemo, user } = useApp();
 
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [copyDoneModalOpen, setCopyDoneModalOpen] = useState(false);
@@ -389,7 +389,7 @@ export const DetailPage: React.FC = () => {
               <line x1="14" y1="11" x2="14" y2="17" />
             </svg>
           </IconButton>
-          <Avatar onClick={() => navigate('/profile')}>IY</Avatar>
+          <Avatar $bgColor={user.avatarBgColor} onClick={() => navigate('/profile')}>{user.avatarInitials || 'IY'}</Avatar>
         </HeaderRight>
       </DetailHeader>
 

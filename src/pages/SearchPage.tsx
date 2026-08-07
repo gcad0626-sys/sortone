@@ -104,14 +104,20 @@ const SmartTagList = styled.div`
 `;
 
 const SmartTag = styled.button<{ $tagText: string }>`
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
   border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
   ${({ $tagText }) => {
     const c = getTagColor($tagText);
     return `background-color: ${c.bg}; color: ${c.text};`;
   }}
+  border: none;
+  cursor: pointer;
   transition: filter 0.15s ease;
 
   &:hover, &:active {

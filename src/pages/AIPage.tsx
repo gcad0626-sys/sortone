@@ -103,7 +103,7 @@ const AiList = styled.div`
 const ListItem = styled.div`
   background-color: ${({ theme }) => theme.colors.white};
   border-radius: 30px;
-  padding: 14px 20px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -114,8 +114,8 @@ const ListItem = styled.div`
 
 
 const ItemTitle = styled.h4`
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 400;
   color: ${({ theme }) => theme.colors.textMain};
   white-space: nowrap;
   overflow: hidden;
@@ -237,12 +237,16 @@ const MenuDivider = styled.div`
 `;
 
 const WorkBadge = styled.span<{ $bg?: string; $color?: string }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: ${({ theme }) => theme.radius.pill};
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
   background-color: ${({ $bg }) => $bg || '#FDE8F7'};
   color: ${({ $color }) => $color || '#FF62EF'};
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 10px;
-  font-weight: 800;
 `;
 
 interface AnalysisItem {
@@ -287,6 +291,60 @@ export const AIPage: React.FC = () => {
   const [hiddenAnalysis, setHiddenAnalysis] = useState<Set<string>>(new Set());
   const [hiddenActions, setHiddenActions] = useState<Set<string>>(new Set());
   const [checkedActions, setCheckedActions] = useState<Set<string>>(new Set());
+
+  const { insightTitle, insightDesc, analysisEfficiency } = React.useMemo(() => {
+    const activeMemos = memos.filter(m => !m.isDeleted && !m.isArchived);
+    if (activeMemos.length === 0) {
+      return {
+        insightTitle: '아직 작성된 메모가 없네요!',
+        insightDesc: '새로운 메모를 작성하여 AI 인사이트를 받아보세요.',
+        analysisEfficiency: 0
+      };
+    }
+    
+    const counts: Record<string, number> = {};
+    let aiProcessedCount = 0;
+
+    activeMemos.forEach(m => {
+      if ((m.aiSummary && m.aiSummary.length > 0) || (m.tags && m.tags.length > 0)) {
+        aiProcessedCount++;
+      }
+
+      const keywords = [];
+      if (m.category && m.category !== '전체') keywords.push(m.category);
+      if (m.tags && m.tags.length > 0) keywords.push(...m.tags);
+      if (keywords.length === 0) keywords.push('일반');
+
+      const uniqueKeywords = Array.from(new Set(keywords));
+      uniqueKeywords.forEach(k => {
+        counts[k] = (counts[k] || 0) + 1;
+      });
+    });
+
+    let topKeyword = '일반';
+    let maxCount = 0;
+    Object.entries(counts).forEach(([keyword, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        topKeyword = keyword;
+      }
+    });
+
+    const percent = Math.round((maxCount / activeMemos.length) * 100);
+    const efficiency = Math.round((aiProcessedCount / activeMemos.length) * 100);
+    
+    let descText = '계속해서 좋은 기록을 남겨보세요.';
+    if (topKeyword.includes('아이디어')) descText = '창의적인 생각들이 잘 정리되고 있어요.';
+    else if (topKeyword.includes('업무') || topKeyword.includes('기획')) descText = '효율적인 업무 관리가 이루어지고 있습니다.';
+    else if (topKeyword.includes('공부') || topKeyword.includes('학습')) descText = '꾸준히 성장하는 모습이 멋집니다.';
+    else if (topKeyword.includes('건강') || topKeyword.includes('운동')) descText = '꾸준한 건강 관리가 돋보이네요.';
+
+    return {
+      insightTitle: `이번 주는 ${topKeyword}에 집중하셨네요!`,
+      insightDesc: `작성하신 메모의 <strong>${percent}%</strong>가 ${topKeyword} 관련 내용입니다. ${descText}`,
+      analysisEfficiency: efficiency
+    };
+  }, [memos]);
 
   const analysisItems = React.useMemo(() => {
     return memos
@@ -366,10 +424,8 @@ export const AIPage: React.FC = () => {
       )}
       <InsightCard>
         <InsightLabel>WEEKLY INSIGHT</InsightLabel>
-        <InsightTitle>이번 주는 기획 업무에 집중하셨네요!</InsightTitle>
-        <InsightDesc>
-          작성하신 메모의 <strong>65%</strong>가 새로운 프로젝트 기획과 관련된 내용입니다. 아이디어 확장에 좋은 흐름이에요.
-        </InsightDesc>
+        <InsightTitle>{insightTitle}</InsightTitle>
+        <InsightDesc dangerouslySetInnerHTML={{ __html: insightDesc }} />
         <StatsRow>
           <StatBox>
             <StatLabel>작성한 메모</StatLabel>
@@ -377,7 +433,7 @@ export const AIPage: React.FC = () => {
           </StatBox>
           <StatBox>
             <StatLabel>분석 효율</StatLabel>
-            <StatValue $positive>+14%</StatValue>
+            <StatValue $positive={analysisEfficiency > 0}>{analysisEfficiency}%</StatValue>
           </StatBox>
         </StatsRow>
       </InsightCard>
