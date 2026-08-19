@@ -95,13 +95,6 @@ const CardContent = styled.p`
   overflow: hidden;
 `;
 
-const ImagePreview = styled.img`
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-top: 12px;
-`;
 
 const Divider = styled.div`
   border-top: 1px dashed #E9ECEF;
@@ -192,10 +185,7 @@ export const TrashPage: React.FC = () => {
               <CardTitle>{memo.title}</CardTitle>
               {plainText && <CardContent>{plainText}</CardContent>}
               
-              {memo.images && memo.images.length > 0 && (
-                <ImagePreview src={memo.images[0]} alt="Attached" />
-              )}
-              
+
               <Divider />
               
               <ActionRow>
@@ -230,7 +220,6 @@ export const TrashPage: React.FC = () => {
 
       <ConfirmModal
         isOpen={deleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
         title="메모를 영구 삭제하시겠습니까?"
         message="삭제된 메모는 다시 복구할 수 없습니다."
         confirmLabel="영구삭제"
@@ -241,7 +230,6 @@ export const TrashPage: React.FC = () => {
       
       <ConfirmModal
         isOpen={deleteCompleteModalOpen}
-        onClose={() => setDeleteCompleteModalOpen(false)}
         title="영구 삭제 완료"
         message="메모가 안전하게 영구 삭제되었습니다."
         confirmLabel="확인"

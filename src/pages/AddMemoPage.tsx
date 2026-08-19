@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { getTagColor } from '../utils/colors';
+import type { Category } from '../types';
 
 /* ─── Keyframes ─────────────────────────────────────────────────── */
 const slideUp = keyframes`
@@ -260,31 +261,6 @@ const FontSizeRadio = styled.div<{ $selected?: boolean }>`
   }
 `;
 
-/* Image panel */
-const ImageOptionList = styled.div`display: flex; flex-direction: column; gap: 12px; padding: 8px 0;`;
-const ImageOptionItem = styled.button`
-  display: flex; align-items: center; gap: 14px; padding: 14px;
-  border-radius: ${({ theme }) => theme.radius.m}; background-color: #FFF;
-  border: 1px solid #EEE; text-align: left; width: 100%;
-  &:hover { background-color: #F8F9FA; }
-`;
-const ImageOptionIconWrap = styled.div`
-  width: 40px; height: 40px; border-radius: 50%; background-color: #F0F5FA;
-  color: ${({ theme }) => theme.colors.primary}; display: flex; align-items: center; justify-content: center;
-  svg { width: 20px; height: 20px; }
-`;
-const ImageOptionInfo = styled.div`display: flex; flex-direction: column; gap: 3px;`;
-const ImageOptionTitle = styled.span`font-size: 13px; font-weight: 700; color: #2B3A4A;`;
-const ImageOptionDesc = styled.span`font-size: 11px; color: #6B7C8D;`;
-const InfoBox = styled.div`
-  display: flex; gap: 8px; background-color: #F0F5FA; padding: 12px 14px;
-  border-radius: ${({ theme }) => theme.radius.m}; margin-top: 6px;
-`;
-const InfoBoxIcon = styled.div`
-  color: ${({ theme }) => theme.colors.primary}; display: flex; align-items: flex-start; margin-top: 1px;
-  svg { width: 16px; height: 16px; }
-`;
-const InfoBoxText = styled.div`font-size: 11px; line-height: 1.5; color: #6B7C8D;`;
 
 /* Link panel */
 const LinkFormFields = styled.div`display: flex; flex-direction: column; gap: 12px; padding: 6px 0;`;
@@ -897,7 +873,7 @@ export const AddMemoPage: React.FC = () => {
           </div>
           {useAi && (
             <AiTagList style={{ marginTop: '8px', flexWrap: 'wrap' }}>
-              {DEFAULT_TAGS.map((tag, i) => (
+              {DEFAULT_TAGS.map((tag) => (
                 <AiTag key={tag} $tagText={tag} $selected={selectedTags.includes(tag)}
                   onClick={() => toggleTag(tag)}>
                   {tag}

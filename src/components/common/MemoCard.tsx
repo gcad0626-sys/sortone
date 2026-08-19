@@ -121,11 +121,10 @@ const Tag = styled.span<{ $tagType: string }>`
 interface MemoCardProps {
   memo: Memo;
   mode?: 'default' | 'trash' | 'archive';
-  onDelete?: (id: string) => void;
   onToggleImportant?: (id: string) => void;
 }
 
-export const MemoCard: React.FC<MemoCardProps> = ({ memo, mode = 'default', onDelete, onToggleImportant }) => {
+export const MemoCard: React.FC<MemoCardProps> = ({ memo, mode = 'default', onToggleImportant }) => {
   const navigate = useNavigate();
   const { updateMemo, deleteMemo } = useApp();
   const [showDropdown, setShowDropdown] = useState(false);

@@ -120,7 +120,7 @@ const Fab = styled.button`
 `;
 
 export const HomePage: React.FC = () => {
-  const { memos, deleteMemo, updateMemo, categories } = useApp();
+  const { memos, updateMemo, categories } = useApp();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -190,7 +190,6 @@ export const HomePage: React.FC = () => {
             <MemoCard 
               key={memo.id} 
               memo={memo} 
-              onDelete={deleteMemo}
               onToggleImportant={(id) => updateMemo(id, { isImportant: false })}
             />
           ))}
@@ -211,7 +210,6 @@ export const HomePage: React.FC = () => {
           <MemoCard 
             key={memo.id} 
             memo={memo} 
-            onDelete={deleteMemo}
             onToggleImportant={(id) => updateMemo(id, { isImportant: true })}
           />
         ))}

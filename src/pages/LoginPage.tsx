@@ -31,9 +31,6 @@ const Catchphrase = styled.p`
   color: ${({ theme }) => theme.colors.textOnPrimary};
 `;
 
-const Spacer = styled.div`
-  flex: 1;
-`;
 
 const ButtonGroup = styled.div`
   display: flex;
@@ -462,7 +459,7 @@ export const LoginPage: React.FC = () => {
             <ModalTitle>계정 선택</ModalTitle>
             <AccountList>
               <AccountItem onClick={handleLogin}>
-                <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="avatar" />
+                <Avatar src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
                 <AccountInfo>
                   <strong>김지수</strong>
                   <span>jisu.kim@gmail.com</span>

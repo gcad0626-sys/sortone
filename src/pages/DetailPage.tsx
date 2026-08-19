@@ -1,106 +1,11 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { getTagColor } from '../utils/colors';
 import { ConfirmModal } from '../components/common/ConfirmModal';
 
-/* ─── Share Modal Styles ─────────────────────────────────────── */
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
 
-const slideUp = keyframes`
-  from { opacity: 0; transform: translateY(20px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-`;
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(4px);
-  animation: ${fadeIn} 0.2s ease;
-`;
-
-const ModalCard = styled.div`
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 36px 28px 28px;
-  width: 100%;
-  max-width: 300px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  animation: ${slideUp} 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 800;
-  color: #2B3A4A;
-  margin-bottom: 24px;
-`;
-
-const ShareIconBtn = styled.button`
-  width: 60px;
-  height: 60px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #C8F5D0 0%, #A8EBB8 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-bottom: 8px;
-  transition: transform 0.18s ease;
-  box-shadow: 0 4px 14px rgba(80, 200, 120, 0.25);
-
-  &:active {
-    transform: scale(0.93);
-  }
-
-  svg {
-    width: 26px;
-    height: 26px;
-    color: #35B37E;
-  }
-`;
-
-const ShareLabel = styled.span`
-  font-size: 12px;
-  color: #6B7C8D;
-  margin-bottom: 24px;
-`;
-
-const ModalCancelBtn = styled.button`
-  width: 100%;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #63D4D9 0%, #4BBFC5 100%);
-  color: #ffffff;
-  box-shadow: 0 6px 18px rgba(75, 191, 197, 0.35);
-  transition: all 0.18s ease;
-
-  &:active {
-    transform: scale(0.97);
-  }
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 8px 22px rgba(75, 191, 197, 0.45);
-  }
-`;
 
 /* ─── Detail Page Styles ─────────────────────────────────────── */
 const DetailContent = styled.div`
@@ -220,24 +125,6 @@ const MemoContent = styled.div`
   b, strong { font-weight: bold !important; }
 `;
 
-const TagsRow = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const Tag = styled.span<{ $tagType: string }>`
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: ${({ theme }) => theme.radius.pill};
-  font-size: 11px;
-  font-weight: 400;
-  
-  ${({ $tagType }) => {
-    const color = getTagColor($tagType);
-    return `background-color: ${color.bg}; color: ${color.text};`;
-  }}
-`;
 
 const DetailHeader = styled.header`
   display: flex;
@@ -465,17 +352,8 @@ export const DetailPage: React.FC = () => {
         message={`메모를 휴지통으로 이동합니다.\n30일 후 영구 삭제되며,\n휴지통에서 복원할 수 있습니다.`}
         confirmLabel="이동"
         cancelLabel="취소"
-        confirmVariant="danger"
         onConfirm={handleTrashConfirm}
         onCancel={() => setTrashModalOpen(false)}
-        icon={
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="3 6 5 6 21 6" />
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-            <line x1="10" y1="11" x2="10" y2="17" />
-            <line x1="14" y1="11" x2="14" y2="17" />
-          </svg>
-        }
       />
     </>
   );

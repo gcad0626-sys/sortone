@@ -1,4 +1,5 @@
-import React, { useState, KeyboardEvent, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
+import type { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -213,7 +214,7 @@ const getChosung = (str: string) => {
 
 export const SearchPage: React.FC = () => {
   const navigate = useNavigate();
-  const { memos, deleteMemo, updateMemo, recentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } = useApp();
+  const { memos, updateMemo, recentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } = useApp();
   const [query, setQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
@@ -329,7 +330,6 @@ export const SearchPage: React.FC = () => {
             <MemoCard 
               key={memo.id} 
               memo={memo} 
-              onDelete={deleteMemo}
               onToggleImportant={(id) => updateMemo(id, { isImportant: !memo.isImportant })}
             />
           ))}

@@ -139,7 +139,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
-  const { user, logout, categories } = useApp();
+  const { user, categories } = useApp();
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
