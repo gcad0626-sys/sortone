@@ -57,12 +57,15 @@ const Logo = styled.span`
   margin-top: 2px;
 `;
 
-const Avatar = styled.span<{ $bgColor?: string }>`
+const Avatar = styled.span<{ $bgColor?: string, $bgImg?: string }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
   background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
-  color: ${({ theme }) => theme.colors.textMain};
+  background-image: ${({ $bgImg }) => $bgImg ? `url(${$bgImg})` : 'none'};
+  background-size: cover;
+  background-position: center;
+  color: ${({ theme, $bgImg }) => $bgImg ? 'transparent' : theme.colors.textMain};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,8 +73,7 @@ const Avatar = styled.span<{ $bgColor?: string }>`
   font-weight: 700;
   cursor: pointer;
   border: none;
-  line-height: 1;
-  padding-top: 1px;
+  line-height: normal;
 `;
 
 interface HeaderProps {
@@ -113,7 +115,13 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </IconButton>
-          <Avatar $bgColor={user.avatarBgColor} onClick={() => navigate('/profile')}>{user.avatarInitials || 'IY'}</Avatar>
+          <Avatar 
+            $bgColor={user.avatarBgColor} 
+            $bgImg={(user.avatarUrl && user.avatarUrl !== '/default-avatar.png') ? user.avatarUrl : undefined}
+            onClick={() => navigate('/profile')}
+          >
+            {(!user.avatarUrl || user.avatarUrl === '/default-avatar.png') && (user.avatarInitials || 'IY')}
+          </Avatar>
         </RightArea>
       )}
     </HeaderContainer>

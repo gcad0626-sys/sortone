@@ -43,12 +43,15 @@ const ProfileArea = styled.div`
   border-bottom: 1px solid #ECEAE5;
 `;
 
-const Avatar = styled.span<{ $bgColor?: string }>`
+const Avatar = styled.span<{ $bgColor?: string, $bgImg?: string }>`
   width: 48px;
   height: 48px;
   border-radius: 50%;
   background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
-  color: ${({ theme }) => theme.colors.textMain};
+  background-image: ${({ $bgImg }) => $bgImg ? `url(${$bgImg})` : 'none'};
+  background-size: cover;
+  background-position: center;
+  color: ${({ theme, $bgImg }) => $bgImg ? 'transparent' : theme.colors.textMain};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -166,7 +169,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     <Overlay $isOpen={isOpen} onClick={onClose}>
       <Drawer $isOpen={isOpen} onClick={(e) => e.stopPropagation()}>
         <ProfileArea onClick={() => handleNavigate('/profile')} style={{ cursor: 'pointer' }}>
-          <Avatar $bgColor={user.avatarBgColor}>{user.avatarInitials || 'IY'}</Avatar>
+          <Avatar 
+            $bgColor={user.avatarBgColor}
+            $bgImg={(user.avatarUrl && user.avatarUrl !== '/default-avatar.png') ? user.avatarUrl : undefined}
+          >
+            {(!user.avatarUrl || user.avatarUrl === '/default-avatar.png') && (user.avatarInitials || 'IY')}
+          </Avatar>
           <InfoBox>
             <NameRow>
               <Name>{user.name}</Name>

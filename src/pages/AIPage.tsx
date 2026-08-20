@@ -292,7 +292,7 @@ export const AIPage: React.FC = () => {
   const [hiddenActions, setHiddenActions] = useState<Set<string>>(new Set());
   const [checkedActions, setCheckedActions] = useState<Set<string>>(new Set());
 
-  const { insightTitle, insightDesc, analysisEfficiency } = React.useMemo(() => {
+  const { insightTitle, insightDesc, analysisEfficiency, activeMemosCount } = React.useMemo(() => {
     const activeMemos = memos.filter(m => !m.isDeleted && !m.isArchived);
     if (activeMemos.length === 0) {
       return {
@@ -342,18 +342,19 @@ export const AIPage: React.FC = () => {
     return {
       insightTitle: `이번 주는 ${topKeyword}에 집중하셨네요!`,
       insightDesc: `작성하신 메모의 <strong>${percent}%</strong>가 ${topKeyword} 관련 내용입니다. ${descText}`,
-      analysisEfficiency: efficiency
+      analysisEfficiency: efficiency,
+      activeMemosCount: activeMemos.length
     };
   }, [memos]);
 
   const analysisItems = React.useMemo(() => {
     return memos
-      .filter(m => !hiddenAnalysis.has(m.id) && m.aiSummary && m.aiSummary.length > 0)
+      .filter(m => !hiddenAnalysis.has(m.id) && !m.isDeleted && !m.isArchived)
       .map(m => ({
         id: m.id,
         title: m.title || '제목 없음',
-        desc: m.tags.length > 0 ? `${m.tags.join(', ')} 관련 분석 완료` : '데이터 분석 및 키워드 추출 중...',
-        status: m.tags.length > 0 ? 'done' : 'doing'
+        desc: (m.aiSummary && m.aiSummary.length > 0) ? `${(m.tags || []).join(', ')} 관련 분석 완료` : '데이터 분석 및 키워드 추출 중...',
+        status: (m.aiSummary && m.aiSummary.length > 0) ? 'done' : 'doing'
       })) as AnalysisItem[];
   }, [memos, hiddenAnalysis]);
 
@@ -429,7 +430,7 @@ export const AIPage: React.FC = () => {
         <StatsRow>
           <StatBox>
             <StatLabel>작성한 메모</StatLabel>
-            <StatValue>{memos.length}개</StatValue>
+            <StatValue>{activeMemosCount}개</StatValue>
           </StatBox>
           <StatBox>
             <StatLabel>분석 효율</StatLabel>

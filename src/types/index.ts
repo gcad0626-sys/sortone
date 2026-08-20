@@ -15,6 +15,7 @@ export interface Memo {
 }
 
 export interface User {
+  uid: string;
   name: string;
   email: string;
   avatarUrl: string;
@@ -22,6 +23,8 @@ export interface User {
   avatarBgColor?: string;
   membership: string;
   activeSince: string;
+  provider?: 'google' | 'kakao' | 'email';
+  hasCustomAvatar?: boolean;
 }
 
 export interface Settings {

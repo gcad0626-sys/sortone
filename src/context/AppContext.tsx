@@ -1,24 +1,30 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 import type { Memo, User, Settings } from '../types';
 
 const STORAGE_KEY = 'sortone_memos';
 const SEARCH_STORAGE_KEY = 'sortone_recent_searches';
 const USER_STORAGE_KEY = 'sortone_user';
 const SETTINGS_STORAGE_KEY = 'sortone_settings';
-const LOGIN_STORAGE_KEY = 'sortone_logged_in';
 const CATEGORIES_STORAGE_KEY = 'sortone_categories';
 
 const INITIAL_CATEGORIES = ['전체', '업무', '개인', '아이디어', '우선순위'];
 
+const today = new Date();
+const formattedToday = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+
 const INITIAL_USER: User = {
+  uid: '',
   name: '인영',
   email: 'user@sortone.ai',
   avatarUrl: '/default-avatar.png', // Fallback or placeholder
   avatarInitials: 'IY',
   avatarBgColor: '#A3C9F1',
   membership: 'Premium',
-  activeSince: '2023.10.15'
+  activeSince: formattedToday,
+  provider: 'email'
 };
 
 const INITIAL_SETTINGS: Settings = {
@@ -103,9 +109,45 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return raw ? JSON.parse(raw) : INITIAL_SETTINGS;
   });
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    return localStorage.getItem(LOGIN_STORAGE_KEY) === 'true';
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        setIsLoggedIn(true);
+        let provider: 'google' | 'kakao' | 'email' | undefined;
+        const providerId = firebaseUser.providerData[0]?.providerId;
+        if (providerId === 'google.com') provider = 'google';
+        else if (providerId === 'password') provider = 'email';
+
+        let parsedActiveSince: string | undefined;
+        if (firebaseUser.metadata?.creationTime) {
+          const d = new Date(firebaseUser.metadata.creationTime);
+          parsedActiveSince = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        setUser(prev => {
+          let finalActiveSince = parsedActiveSince || prev.activeSince;
+          if (finalActiveSince === '2023.10.15') {
+            const today = new Date();
+            finalActiveSince = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+          }
+          return {
+            ...prev,
+            uid: firebaseUser.uid,
+            name: firebaseUser.displayName || prev.name,
+            email: firebaseUser.email || prev.email,
+            avatarUrl: prev.hasCustomAvatar ? prev.avatarUrl : (firebaseUser.photoURL || prev.avatarUrl),
+            activeSince: finalActiveSince,
+            ...(provider ? { provider } : {})
+          };
+        });
+      } else {
+        setIsLoggedIn(false);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const [categories, setCategories] = useState<string[]>(() => {
     const raw = localStorage.getItem(CATEGORIES_STORAGE_KEY);
@@ -127,10 +169,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
   }, [settings]);
-
-  useEffect(() => {
-    localStorage.setItem(LOGIN_STORAGE_KEY, String(isLoggedIn));
-  }, [isLoggedIn]);
 
   useEffect(() => {
     localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
@@ -189,15 +227,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     }
   };
 
-  const login = () => setIsLoggedIn(true);
-  const logout = () => setIsLoggedIn(false);
-  const deleteAccount = () => {
-    localStorage.clear();
-    setMemos(INITIAL_MEMOS);
-    setUser(INITIAL_USER);
-    setSettings(INITIAL_SETTINGS);
-    setRecentSearches([]);
-    setIsLoggedIn(false);
+  const login = () => { /* Firebase signInWithPopup handles login */ };
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+  const deleteAccount = async () => {
+    try {
+      await signOut(auth);
+      localStorage.clear();
+      setMemos(INITIAL_MEMOS);
+      setUser(INITIAL_USER);
+      setSettings(INITIAL_SETTINGS);
+      setRecentSearches([]);
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error('Error deleting account/signing out:', error);
+    }
   };
 
   return (

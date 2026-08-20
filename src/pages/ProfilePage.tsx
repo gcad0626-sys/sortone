@@ -23,12 +23,15 @@ const AvatarWrap = styled.div`
   margin-bottom: 16px;
 `;
 
-const AvatarImg = styled.span<{ $bgColor?: string }>`
+const AvatarImg = styled.span<{ $bgColor?: string, $bgImg?: string }>`
   width: 80px;
   height: 80px;
   border-radius: 50%;
   background-color: ${({ $bgColor }) => $bgColor || '#A3C9F1'};
-  color: ${({ theme }) => theme.colors.textMain};
+  background-image: ${({ $bgImg }) => $bgImg ? `url(${$bgImg})` : 'none'};
+  background-size: cover;
+  background-position: center;
+  color: ${({ theme, $bgImg }) => $bgImg ? 'transparent' : theme.colors.textMain};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,6 +88,34 @@ const Badge = styled.span`
   font-weight: 600;
   background-color: rgba(255, 255, 255, 0.15);
   color: ${({ theme }) => theme.colors.textOnPrimary};
+`;
+
+const ProviderBadge = styled.div<{ $provider: 'google' | 'kakao' | 'email' }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 8px;
+  background-color: ${({ $provider }) => {
+    if ($provider === 'google') return '#FFFFFF';
+    if ($provider === 'kakao') return '#FEE500';
+    return '#F1F5F9';
+  }};
+  color: ${({ $provider }) => {
+    if ($provider === 'google') return '#3C4043';
+    if ($provider === 'kakao') return '#000000';
+    return '#475569';
+  }};
+  border: ${({ $provider }) => $provider === 'google' ? '1px solid #DADCE0' : 'none'};
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
 `;
 
 const ProfileCard = styled.section`
@@ -217,7 +248,9 @@ export const ProfilePage: React.FC = () => {
   const handleSaveAvatar = () => {
     updateUser({
       avatarInitials: editInitials || 'IY',
-      avatarBgColor: editBgColor
+      avatarBgColor: editBgColor,
+      avatarUrl: '/default-avatar.png',
+      hasCustomAvatar: true
     });
     setModalStep('none');
   };
@@ -249,7 +282,12 @@ export const ProfilePage: React.FC = () => {
     <ProfileContent>
       <ProfileInfo>
         <AvatarWrap>
-          <AvatarImg $bgColor={user.avatarBgColor}>{user.avatarInitials || 'IY'}</AvatarImg>
+          <AvatarImg 
+            $bgColor={user.avatarBgColor} 
+            $bgImg={(user.avatarUrl && user.avatarUrl !== '/default-avatar.png') ? user.avatarUrl : undefined}
+          >
+            {(!user.avatarUrl || user.avatarUrl === '/default-avatar.png') && (user.avatarInitials || 'IY')}
+          </AvatarImg>
           <EditAvatarBtn onClick={handleOpenEditAvatar} aria-label="프로필 수정">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 20h9" />
@@ -263,6 +301,38 @@ export const ProfilePage: React.FC = () => {
           <Badge>{user.membership}</Badge>
           <Badge>D+{Math.floor((new Date().getTime() - new Date(user.activeSince.replace(/\./g, '-')).getTime()) / (1000 * 60 * 60 * 24))}</Badge>
         </Badges>
+        {user.provider && (
+          <ProviderBadge $provider={user.provider}>
+            {user.provider === 'google' && (
+              <>
+                <svg viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                </svg>
+                Google
+              </>
+            )}
+            {user.provider === 'kakao' && (
+              <>
+                <svg viewBox="0 0 24 24">
+                  <path fill="#000000" d="M12 3c-5.52 0-10 3.5-10 7.81 0 2.8 1.83 5.25 4.61 6.55-.16.58-1.05 4.02-1.09 4.27-.05.3.14.31.27.22.1-.07 3.33-2.22 4.67-3.11.5.06 1.01.1 1.54.1 5.52 0 10-3.51 10-7.83S17.52 3 12 3z"/>
+                </svg>
+                Kakao
+              </>
+            )}
+            {user.provider === 'email' && (
+              <>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Email
+              </>
+            )}
+          </ProviderBadge>
+        )}
       </ProfileInfo>
 
       <ProfileCard>
