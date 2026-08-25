@@ -177,6 +177,31 @@ const HeaderTitle = styled.h1`
   text-align: center;
 `;
 
+const BackButton = styled.button`
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.textOnPrimary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  
+  &:hover, &:active {
+    opacity: 1;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+`;
+
 const ModalOverlay = styled.div`
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -375,6 +400,11 @@ export const LoginPage: React.FC = () => {
         </>
       ) : (
         <EmailLoginWrap>
+          <BackButton onClick={() => setView('landing')} aria-label="뒤로가기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+          </BackButton>
           <HeaderTitle>이메일 로그인</HeaderTitle>
           <Form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
             <FormGroup>
