@@ -57,7 +57,7 @@ const Logo = styled.span`
   margin-top: 2px;
 `;
 
-const Avatar = styled.span<{ $bgColor?: string, $bgImg?: string }>`
+const Avatar = styled.div<{ $bgColor?: string, $bgImg?: string }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -73,7 +73,8 @@ const Avatar = styled.span<{ $bgColor?: string, $bgImg?: string }>`
   font-weight: 700;
   cursor: pointer;
   border: none;
-  line-height: normal;
+  line-height: 1;
+  padding-top: 1px; /* Optical centering for some fonts */
 `;
 
 interface HeaderProps {
