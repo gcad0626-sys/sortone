@@ -318,7 +318,7 @@ const ModalActions = styled.div`
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useApp();
+  const { login, updateUser } = useApp();
   const [showKakaoModal, setShowKakaoModal] = React.useState(false);
   const [view, setView] = React.useState<'landing' | 'email'>(location.state?.view || 'landing');
 
@@ -432,7 +432,10 @@ export const LoginPage: React.FC = () => {
               제공된 정보는 'SortOne'의 개인정보 처리방침에<br/>따라 안전하게 보호됩니다.
             </ModalNotice>
             <ModalActions>
-              <button className="allow" onClick={handleLogin}>허용하기</button>
+              <button className="allow" onClick={() => {
+                updateUser({ provider: 'kakao' });
+                handleLogin();
+              }}>허용하기</button>
               <button className="cancel" onClick={() => setShowKakaoModal(false)}>취소</button>
             </ModalActions>
           </ModalCard>
