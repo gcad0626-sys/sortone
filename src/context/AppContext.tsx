@@ -4,12 +4,6 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 import type { Memo, User, Settings } from '../types';
 
-const STORAGE_KEY = 'sortone_memos';
-const SEARCH_STORAGE_KEY = 'sortone_recent_searches';
-const USER_STORAGE_KEY = 'sortone_user';
-const SETTINGS_STORAGE_KEY = 'sortone_settings';
-const CATEGORIES_STORAGE_KEY = 'sortone_categories';
-
 const INITIAL_CATEGORIES = ['전체', '업무', '개인', '아이디어', '우선순위'];
 
 const today = new Date();
@@ -89,32 +83,42 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const getStorageKey = (uid: string, key: string) => `${uid || 'guest'}_${key}`;
+
+  const [user, setUser] = useState<User>(() => {
+    const raw = localStorage.getItem('sortone_user');
+    return raw ? JSON.parse(raw) : INITIAL_USER;
+  });
+
   const [memos, setMemos] = useState<Memo[]>(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey(user.uid, 'sortone_memos'));
     return raw ? JSON.parse(raw) : INITIAL_MEMOS;
   });
 
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
-    const raw = localStorage.getItem(SEARCH_STORAGE_KEY);
+    const raw = localStorage.getItem(getStorageKey(user.uid, 'sortone_recent_searches'));
     return raw ? JSON.parse(raw) : [];
   });
 
-  const [user, setUser] = useState<User>(() => {
-    const raw = localStorage.getItem(USER_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : INITIAL_USER;
+  const [settings, setSettings] = useState<Settings>(() => {
+    const raw = localStorage.getItem(getStorageKey(user.uid, 'sortone_settings'));
+    return raw ? JSON.parse(raw) : INITIAL_SETTINGS;
   });
 
-  const [settings, setSettings] = useState<Settings>(() => {
-    const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : INITIAL_SETTINGS;
+  const [categories, setCategories] = useState<string[]>(() => {
+    const raw = localStorage.getItem(getStorageKey(user.uid, 'sortone_categories'));
+    return raw ? JSON.parse(raw) : INITIAL_CATEGORIES;
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      let currentUid = 'guest';
       if (firebaseUser) {
         setIsLoggedIn(true);
+        currentUid = firebaseUser.uid;
+        
         let provider: 'google' | 'kakao' | 'email' | undefined;
         const providerId = firebaseUser.providerData[0]?.providerId;
         if (providerId === 'google.com') provider = 'google';
@@ -144,35 +148,42 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         });
       } else {
         setIsLoggedIn(false);
+        setUser(INITIAL_USER);
       }
+      
+      // Reload user data based on the current uid
+      const loadData = (key: string, initial: any) => {
+        const raw = localStorage.getItem(getStorageKey(currentUid, key));
+        return raw ? JSON.parse(raw) : initial;
+      };
+
+      setMemos(loadData('sortone_memos', INITIAL_MEMOS));
+      setRecentSearches(loadData('sortone_recent_searches', []));
+      setSettings(loadData('sortone_settings', INITIAL_SETTINGS));
+      setCategories(loadData('sortone_categories', INITIAL_CATEGORIES));
     });
     return () => unsubscribe();
   }, []);
 
-  const [categories, setCategories] = useState<string[]>(() => {
-    const raw = localStorage.getItem(CATEGORIES_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : INITIAL_CATEGORIES;
-  });
+  useEffect(() => {
+    localStorage.setItem(getStorageKey(user.uid, 'sortone_memos'), JSON.stringify(memos));
+  }, [memos, user.uid]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(memos));
-  }, [memos]);
+    localStorage.setItem(getStorageKey(user.uid, 'sortone_recent_searches'), JSON.stringify(recentSearches));
+  }, [recentSearches, user.uid]);
 
   useEffect(() => {
-    localStorage.setItem(SEARCH_STORAGE_KEY, JSON.stringify(recentSearches));
-  }, [recentSearches]);
-
-  useEffect(() => {
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
+    localStorage.setItem('sortone_user', JSON.stringify(user));
   }, [user]);
 
   useEffect(() => {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-  }, [settings]);
+    localStorage.setItem(getStorageKey(user.uid, 'sortone_settings'), JSON.stringify(settings));
+  }, [settings, user.uid]);
 
   useEffect(() => {
-    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(categories));
-  }, [categories]);
+    localStorage.setItem(getStorageKey(user.uid, 'sortone_categories'), JSON.stringify(categories));
+  }, [categories, user.uid]);
 
   const addMemo = (memoData: Omit<Memo, 'id' | 'createdAt' | 'updatedAt'>) => {
     const newMemo: Memo = {
@@ -238,8 +249,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
   const deleteAccount = async () => {
     try {
+      const uid = user.uid;
       await signOut(auth);
-      localStorage.clear();
+      // Optional: Clean up user specific local storage here
+      localStorage.removeItem(getStorageKey(uid, 'sortone_memos'));
+      localStorage.removeItem(getStorageKey(uid, 'sortone_recent_searches'));
+      localStorage.removeItem(getStorageKey(uid, 'sortone_settings'));
+      localStorage.removeItem(getStorageKey(uid, 'sortone_categories'));
+      
       setMemos(INITIAL_MEMOS);
       setUser(INITIAL_USER);
       setSettings(INITIAL_SETTINGS);
@@ -268,3 +285,4 @@ export const useApp = () => {
   if (!context) throw new Error('useApp must be used within an AppProvider');
   return context;
 };
+
